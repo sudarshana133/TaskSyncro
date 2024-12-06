@@ -4,7 +4,7 @@ import { useUser } from "@/context/UserContext";
 import { account } from "@/lib/appwrite";
 import React from "react";
 
-const page = () => {
+const Page = () => {
   const { user } = useUser();
   return (
     <div>
@@ -42,4 +42,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

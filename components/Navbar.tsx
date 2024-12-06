@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/context/UserContext";
 import { Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
+import Image from "next/image";
 
 const Navbar = () => {
   const { user } = useUser();
@@ -23,7 +24,9 @@ const Navbar = () => {
         <h1 className="text-xl font-bold">TaskSyncro</h1>
         <div className="flex items-center">
           {user.avatar && (
-            <img
+            <Image
+              width={80}
+              height={80}
               src={user.avatar}
               alt="User Avatar"
               className="rounded-full w-8 h-8 mr-2"

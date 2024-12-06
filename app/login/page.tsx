@@ -83,7 +83,7 @@ const LoginPage = () => {
             Sign in with Google
           </Button>
           <p className="text-center mt-4">
-            Don't have an account?{" "}
+            Don{"'"}t have an account?{" "}
             <a href="/signup" className="text-blue-500">
               Sign up
             </a>
