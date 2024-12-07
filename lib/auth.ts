@@ -1,51 +1,8 @@
-import {  OAuthProvider, Query } from "appwrite"
-import { account,database,ID } from "./appwrite"
+import { account, database, ID } from "./appwrite"
 
-
-export const loginWithGoogle = async () => {
+export const registerUser = async (username: string, email: string, password: string) => {
     try {
-        account.createOAuth2Session(
-            OAuthProvider.Google,
-            `${process.env.NEXT_PUBLIC_MAIN_URL!}/dashboard`,
-            `${process.env.NEXT_PUBLIC_MAIN_URL!}/error`,
-        );
-
-        const user:User = await account.get();
-
-        const existingUser = await database.listDocuments(
-            process.env.NEXT_PUBLIC_DATABASE_ID!,
-            process.env.NEXT_PUBLIC_USER_COLLECTION_ID!,
-            [
-                Query.equal("email", user.email),
-            ]
-        );
-        console.log(existingUser);
-        if (existingUser.documents.length > 0) {
-            window.location.href = "/dashboard";
-        } else {
-            const userDoc = await database.createDocument(
-                process.env.NEXT_PUBLIC_DATABASE_ID!,
-                process.env.NEXT_PUBLIC_USER_COLLECTION_ID!,
-                user.$id,
-                {
-                    username: user.name || "unknown",
-                    email: user.email || "unknown",
-                    avatar: user.avatar || "",
-                    created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString(),
-                }
-            );
-            console.log("New user document created:", userDoc);
-            window.location.href = "/dashboard";
-        }
-    } catch (error) {
-        console.log("Error during Google login/signup:", error);
-    }
-};
-
-export const registerUser = async (username:string,email: string, password: string) => {
-    try {
-        const user = await account.create(ID.unique(),email,password,username);
+        const user = await account.create(ID.unique(), email, password, username);
         const userDoc = await database.createDocument(
             process.env.NEXT_PUBLIC_DATABASE_ID!,
             process.env.NEXT_PUBLIC_USER_COLLECTION_ID!,
@@ -69,7 +26,7 @@ export const loginUser = async (email: string, password: string) => {
     try {
         await account.createEmailPasswordSession(email, password);
     } catch (error) {
-       throw error;
+        throw error;
     }
 };
 

@@ -3,16 +3,18 @@ import { FormEvent, useEffect, useState } from "react";
 import { account } from "@/lib/appwrite";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { loginUser, loginWithGoogle } from "@/lib/auth";
+import { loginUser} from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import Loader from "@/components/loader";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { toast } = useToast();
+  const router = useRouter();
 
   // Check if the user is already logged in
   const checkSession = async () => {
@@ -76,13 +78,6 @@ const LoginPage = () => {
           />
           <Button type="submit" className="w-full">
             Login
-          </Button>
-          <Button
-            type="button"
-            className="w-full bg-green-500 text-white hover:bg-green-600"
-            onClick={loginWithGoogle}
-          >
-            Sign in with Google
           </Button>
           <p className="text-center mt-4">
             Don{"'"}t have an account?{" "}

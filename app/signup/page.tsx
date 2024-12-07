@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { account } from "@/lib/appwrite";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { loginUser, loginWithGoogle, registerUser } from "@/lib/auth";
+import { loginUser, registerUser } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import Loader from "@/components/loader";
 
@@ -85,13 +85,6 @@ const SignupPage = () => {
           />
           <Button type="submit" className="w-full">
             Register
-          </Button>
-          <Button
-            type="button"
-            className="w-full bg-green-500 text-white hover:bg-green-600"
-            onClick={loginWithGoogle}
-          >
-            Sign up with Google
           </Button>
           <p className="text-center mt-4">
             Already have an account?{" "}
