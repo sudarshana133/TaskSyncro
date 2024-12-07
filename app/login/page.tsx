@@ -1,5 +1,4 @@
 "use client";
-
 import { FormEvent, useEffect, useState } from "react";
 import { account } from "@/lib/appwrite";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { loginUser, loginWithGoogle } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import Loader from "@/components/loader";
+import Link from "next/link";
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(true);
@@ -17,8 +17,10 @@ const LoginPage = () => {
   // Check if the user is already logged in
   const checkSession = async () => {
     try {
-      await account.get(); // Check for an active session
-      window.location.href = "/dashboard";
+      const user = await account.get();
+      if(user) {
+        window.location.href = "/dashboard";
+      }
     } catch {
       setLoading(false);
     }
@@ -33,13 +35,13 @@ const LoginPage = () => {
     try {
       await loginUser(email, password);
       window.location.href = "/dashboard";
-    } catch (error:any) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to log in. Please try again.",
         variant: "destructive",
       });
-      console.log("Login error:", error);
+      console.error("Login error:", error);
     }
   };
 
@@ -55,7 +57,7 @@ const LoginPage = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="bg-blue-100 p-8 rounded-2xl shadow-xl max-w-md w-full">
         <h1 className="text-2xl font-bold text-center mb-6">TaskSyncro</h1>
-        <form className="space-y-4" onSubmit={handleSubmit}>
+        <form className="space-y-4" onSubmit={(e)=>handleSubmit(e)}>
           <Input
             type="email"
             placeholder="Email"
@@ -84,9 +86,9 @@ const LoginPage = () => {
           </Button>
           <p className="text-center mt-4">
             Don{"'"}t have an account?{" "}
-            <a href="/signup" className="text-blue-500">
+            <Link href="/signup" className="text-blue-500">
               Sign up
-            </a>
+            </Link>
           </p>
         </form>
       </div>

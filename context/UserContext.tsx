@@ -18,7 +18,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       setUser(currentUser);
     } catch (err) {
       console.error("Not logged in");
-      window.location.href = "/login"; // Redirect to login page if not logged in
+      window.location.href = "/login";
     }
   };
 
