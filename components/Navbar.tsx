@@ -9,11 +9,7 @@ const Navbar = () => {
   const { user } = useUser();
   const router = useRouter();
   if (!user) {
-    return (
-      <div className="animate-spin">
-        <Loader2 />
-      </div>
-    );
+    return null;
   }
   return (
     <div>
