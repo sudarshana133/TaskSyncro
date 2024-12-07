@@ -6,8 +6,8 @@ export const loginWithGoogle = async () => {
     try {
         account.createOAuth2Session(
             OAuthProvider.Google,
-            'http://localhost:3000/dashboard', // redirect here on success
-            'http://localhost:3000/error',
+            `${process.env.NEXT_PUBLIC_MAIN_URL!}/dashboard`,
+            `${process.env.NEXT_PUBLIC_MAIN_URL!}/error`,
         );
 
         const user:User = await account.get();
