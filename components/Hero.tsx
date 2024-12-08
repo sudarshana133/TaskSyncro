@@ -17,7 +17,7 @@ const Hero = () => {
     {
       name: "Collaborate Seamlessly",
       description:
-        "Share projects and collaborate with your team effortlessly.",
+        "Share modules and collaborate with your team effortlessly.",
       image: "/images/collaboration.jpg",
     },
     {
@@ -30,6 +30,8 @@ const Hero = () => {
   return (
     <section className="w-full bg-gray-50">
       <Carousel>
+        {" "}
+        {/* Add `loop` for continuous carousel */}
         <CarouselContent>
           {content.map((item, index) => (
             <CarouselItem
@@ -47,16 +49,17 @@ const Hero = () => {
               </div>
 
               {/* Right Side (Image with animation) */}
-              <div className="relative w-full lg:w-1/2">
+              <div className="relative w-full lg:w-1/2 text-center mx-auto flex justify-center items-center">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="w-full h-auto rounded-lg shadow-lg transform transition-all duration-500 ease-in-out hover:translate-y-2 hover:scale-105"
+                  className="w-full h-[30rem] object-cover rounded-lg shadow-lg transform transition-all duration-500 ease-in-out hover:translate-y-2 hover:scale-105"
                 />
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
+        {/* Carousel Controls */}
         <CarouselPrevious className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:bg-gray-100" />
         <CarouselNext className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:bg-gray-100" />
       </Carousel>
