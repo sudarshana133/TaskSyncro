@@ -23,6 +23,8 @@ export async function GET(request: Request) {
             creator: doc.creator,
             participants: doc.participants,
             public: doc.public,
+            createdAt: doc.createAt,
+            updatedAt: doc.updatedAt
         }));
 
         if (modules.length === 0) {
