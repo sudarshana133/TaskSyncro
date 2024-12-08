@@ -40,6 +40,9 @@ const Nav = () => {
 
         {/* Desktop Navigation Links */}
         <div className="hidden lg:flex space-x-6 mx-auto">
+          <Link href="/about" className="hover:text-blue-600">
+            About
+          </Link>
           <Link href="/features" className="hover:text-blue-600">
             Features
           </Link>
