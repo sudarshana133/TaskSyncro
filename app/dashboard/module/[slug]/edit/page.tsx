@@ -8,6 +8,7 @@ import { FormEvent, useState, useEffect } from "react";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ModulePreview from "@/components/ModulePreview";
 
 const YouTubeResourcePage = () => {
   const { slug } = useParams();
@@ -141,65 +142,12 @@ const YouTubeResourcePage = () => {
           </Card>
         </div>
 
-        {/* Resources List */}
-        <div className="w-full">
-          <Card className="shadow-lg transition-shadow duration-300 hover:shadow-xl">
-            <CardHeader className="bg-secondary text-secondary-foreground rounded-t-lg">
-              <CardTitle className="text-2xl font-bold flex items-center justify-between">
-                Module Resources
-                <Button
-                  onClick={fetchResources}
-                  variant="outline"
-                  size="sm"
-                  className="transition-colors duration-200 ease-in-out hover:bg-primary hover:text-primary-foreground"
-                >
-                  Refresh
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-grow overflow-y-auto pt-6 pb-6 px-6">
-              {loading ? (
-                <p>Loading...</p>
-              ) : resources.length > 0 ? (
-                <ul className="space-y-4">
-                  {resources.map((resource) => (
-                    <li
-                      key={resource.$id}
-                      className="flex items-center space-x-4 bg-white p-4 rounded-md shadow-sm transition-shadow duration-200 hover:shadow-md"
-                    >
-                      <img
-                        src="https://i.ytimg.com/vi/UrsmFxEIp5k/hq720.jpg?sqp=-oaymwEnCNAFEJQDSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLBm9X2Vozsbpfw8ihb1mR7DCytnWQ"
-                        alt="Resource Thumbnail"
-                        width={120}
-                        height={80}
-                        className="rounded-md object-cover"
-                      />
-                      <div className="flex items-center justify-between w-full gap-2">
-                        <div>
-                          <a
-                            href={resource.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:text-primary-dark font-medium text-lg transition-colors duration-200"
-                          >
-                            {resource.title || "Untitled Resource"}
-                          </a>
-                          <p className="text-sm text-gray-500 mt-1">
-                            YouTube Video
-                          </p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-gray-500 italic text-center py-8">
-                  No resources available for this module.
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <ModulePreview
+          resources={resources}
+          setResources={setResources}
+          isEdit={true}
+          slug={slugString}
+        />
       </div>
     </div>
   );

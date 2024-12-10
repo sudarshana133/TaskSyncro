@@ -5,8 +5,8 @@ import { validateURL } from "@/lib/validate-youtube-url";
 const database_id = process.env.NEXT_PUBLIC_DATABASE_ID!;
 const collection_id = process.env.NEXT_PUBLIC_MODULE_RESOURCES_COLLECTION_ID!;
 
-export async function POST(request: NextRequest, { params }: { params: { slug: string } }) {
-    const slug = params.slug;
+export async function POST(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const slug = (await params).slug;
     const { youtubeURL, title } = await request.json();
 
     // Validate the YouTube URL

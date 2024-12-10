@@ -4,8 +4,8 @@ import { Query } from "appwrite";
 
 const database_id = process.env.NEXT_PUBLIC_DATABASE_ID!;
 const collection_id = process.env.NEXT_PUBLIC_MODULE_RESOURCES_COLLECTION_ID!;
-export async function GET(request: NextRequest, { params }: { params: { slug: string } }) {
-    const slug = params.slug;
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
+    const slug = (await params).slug;
 
     if (!slug) {
         return NextResponse.json({ error: "Module slug is required" }, { status: 400 });
