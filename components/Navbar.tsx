@@ -31,7 +31,7 @@ const Navbar = () => {
               src="/favicon.jpg"
               className="rounded-lg shadow-md w-10 sm:w-14"
             />
-            <h1 className="text-[16px] sm:text-xl font-bold">TaskSyncro</h1>
+            <h1 className="text-[15px] sm:text-xl font-bold">TaskSyncro</h1>
           </div>
         </Link>
         <div className="flex items-center" onClick={handleDashboardClick}>
@@ -51,6 +51,7 @@ const Navbar = () => {
                 e.stopPropagation();
                 router.push("/dashboard/module?new=true");
               }}
+              className="px-2 sm:px-4"
             >
               Create <ArrowRight />
             </Button>

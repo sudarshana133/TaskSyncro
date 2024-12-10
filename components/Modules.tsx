@@ -11,6 +11,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const Modules = () => {
   const [modules, setModules] = useState<Module[]>([]);
@@ -18,6 +19,7 @@ const Modules = () => {
   const [error, setError] = useState<string | null>(null);
   const { user } = useUser();
   const { toast } = useToast();
+  const router = useRouter();
   const getModules = async () => {
     try {
       if (!user) return;
@@ -73,17 +75,6 @@ const Modules = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="bg-red-50 border border-red-200 text-red-800 p-6 rounded-xl shadow-md">
-        <div className="flex items-center">
-          <AlertTriangle className="mr-4 text-red-500" size={36} />
-          <p className="text-xl">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white shadow-md rounded-xl p-6 border border-gray-100">
       <div className="flex items-center mb-6 pb-3 border-b">
@@ -99,7 +90,11 @@ const Modules = () => {
               className="bg-gray-50 border border-gray-200 rounded-lg p-6 
                          hover:bg-gray-100 hover:border-blue-200 
                          transition duration-300 transform hover:-translate-y-2 
-                         hover:shadow-lg"
+                         hover:shadow-lg hover:cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/dashboard/module/${module.$id}`);
+              }}
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
@@ -111,7 +106,10 @@ const Modules = () => {
                 <Trash2
                   color="red"
                   className="cursor-pointer hover:text-red-700 transition"
-                  onClick={() => handleDelete(module.$id)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(module.$id);
+                  }}
                 />
               </div>
               <p className="text-gray-600 mb-4 line-clamp-2">

@@ -41,6 +41,7 @@ export const ModuleCreation = ({ user }: { user: User }) => {
         title: title.trim(),
         description: description.trim(),
         pub: isPublic,
+        userId: user.$id
       });
 
       // Success toast

@@ -23,10 +23,11 @@ export async function GET(request: Request) {
             creator: doc.creator,
             participants: doc.participants,
             public: doc.public,
-            createdAt: doc.createAt,
-            updatedAt: doc.updatedAt
+            createdAt: doc.createdAt,
+            updatedAt: doc.updatedAt,
+            modules: doc.moduleResources
         }));
-
+        console.log(modules);
         if (modules.length === 0) {
             return NextResponse.json({ error: "No modules found" }, { status: 404 });
         }
@@ -37,13 +38,13 @@ export async function GET(request: Request) {
 }
 export async function POST(request: NextRequest) {
     try {
-        const { title, description, pub } = await request.json();
+        const { title, description, pub, userId } = await request.json();
         const { searchParams } = new URL(request.url);
         const name = searchParams.get("name");
 
         // Ensure pub is explicitly converted to a boolean
         const isPublic = pub === true || pub === "true";
-
+        if (!userId) return NextResponse.json({ error: "Your are not logged in" }, { status: 500 })
         if (!title || !description || !name) {
             return NextResponse.json({ error: "Title, description, or creator is missing" }, { status: 400 });
         }
@@ -51,9 +52,10 @@ export async function POST(request: NextRequest) {
         const documentData = {
             title,
             description,
-            public: isPublic, // Use the converted boolean value
+            public: isPublic,
             creator: name,
             createdAt: new Date().toISOString(),
+            user: userId
         }
 
         const res = await database.createDocument(
