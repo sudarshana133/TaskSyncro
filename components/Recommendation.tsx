@@ -1,11 +1,9 @@
 "use client";
-import { useUser } from "@/context/UserContext";
 import axios from "axios";
 import { FolderOpen, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const Recommendation = () => {
-  const { user } = useUser();
+const Recommendation = ({user}:{user:User}) => {
   const [recommendation, setRecommendation] = useState<Module[]>([]);
   useEffect(() => {
     const fetchRecommendation = async () => {

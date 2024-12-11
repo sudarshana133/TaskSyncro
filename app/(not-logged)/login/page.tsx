@@ -1,59 +1,37 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
-import { account } from "@/lib/appwrite";
+import { FormEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { loginUser} from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import Loader from "@/components/loader";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 const LoginPage = () => {
-  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { toast } = useToast();
   const router = useRouter();
 
-  // Check if the user is already logged in
-  const checkSession = async () => {
-    try {
-      const user = await account.get();
-      if (user) {
-        window.location.href = "/dashboard";
-      }
-    } catch {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    checkSession();
-  }, []);
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await loginUser(email, password);
-      window.location.href = "/dashboard";
+      const res = await axios.post("/api/auth", {
+        email,
+        password,
+      });
+      console.log(res.data);
+      router.push("/dashboard");
     } catch (error: any) {
       toast({
         title: "Error",
         description: error.message || "Failed to log in. Please try again.",
         variant: "destructive",
       });
-      console.error("Login error:", error);
+      console.log("Login error:", error);
     }
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center w-full min-h-screen">
-        <Loader />
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-100 px-4 sm:px-8 md:px-0">

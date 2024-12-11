@@ -1,10 +1,31 @@
-import { Client, Account, Databases,ID } from "appwrite";
+"use server";
+import { Client, Account } from "node-appwrite";
+import { cookies } from "next/headers";
 
-export const appwrite_endpoint = String(process.env.NEXT_PUBLIC_APPWRITE_URL);
-export const appwrite_project_id = String(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID);
-const client = new Client().setEndpoint(appwrite_endpoint).setProject(appwrite_project_id);
+export async function createSessionClient() {
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_URL!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
 
-const account = new Account(client);
-const database = new Databases(client);
+  const session = (await cookies()).get("session");
+  if (!session || !session.value) {
+    throw new Error("No session");
+  }
 
-export { client, account, database,ID };
+  client.setSession(session.value);
+
+  return {
+    get account() {
+      return new Account(client);
+    },
+  };
+}
+
+export async function getLoggedInUser(): Promise<User | null> {
+  try {
+    const { account } = await createSessionClient();
+    return await account.get();
+  } catch (error) {
+    return null;
+  }
+}

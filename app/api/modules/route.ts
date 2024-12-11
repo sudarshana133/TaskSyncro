@@ -1,41 +1,10 @@
-import { database } from "@/lib/appwrite";
+import { database } from "@/lib/appwrite-server";
 import { ID, Query } from "appwrite";
 import { NextRequest, NextResponse } from "next/server";
 
 const database_id = process.env.NEXT_PUBLIC_DATABASE_ID!;
 const collection_id = process.env.NEXT_PUBLIC_MODULE_COLLECTION_ID!;
 
-export async function GET(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const name = searchParams.get("name");
-    if (!name) {
-        return NextResponse.json({ error: "Name not found" }, { status: 404 });
-    }
-    try {
-        const documents = await database.listDocuments(database_id, collection_id, [
-            Query.equal("creator", name),
-        ]);
-
-        const modules: Module[] = documents.documents.map((doc) => ({
-            $id: doc.$id,
-            title: doc.title,
-            description: doc.description,
-            creator: doc.creator,
-            participants: doc.participants,
-            public: doc.public,
-            createdAt: doc.createdAt,
-            updatedAt: doc.updatedAt,
-            modules: doc.moduleResources
-        }));
-        console.log(modules);
-        if (modules.length === 0) {
-            return NextResponse.json({ error: "No modules found" }, { status: 404 });
-        }
-        return NextResponse.json({ modules }, { status: 200 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-}
 export async function POST(request: NextRequest) {
     try {
         const { title, description, pub, userId } = await request.json();

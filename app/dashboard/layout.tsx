@@ -1,15 +1,16 @@
 import Navbar from "@/components/Navbar";
-import { UserProvider } from "@/context/UserContext";
+import { getLoggedInUser } from "@/lib/appwrite";
+import { redirect } from "next/navigation";
 import React, { ReactNode } from "react";
 
-const layout = ({ children }: { children: ReactNode }) => {
+const layout = async ({ children }: { children: ReactNode }) => {
+  const user = await getLoggedInUser();
+  if (!user) redirect("/login");
   return (
-    <UserProvider>
-      <div>
-        <Navbar />
-        {children}
-      </div>
-    </UserProvider>
+    <div>
+      <Navbar user={user} />
+      {children}
+    </div>
   );
 };
 

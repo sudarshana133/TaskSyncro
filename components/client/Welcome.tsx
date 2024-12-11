@@ -1,9 +1,4 @@
-"use client";
-
-import { useUser } from "@/context/UserContext";
-
-const Welcome = () => {
-  const { user } = useUser();
+const Welcome = ({user}:{user:User}) => {
   const time = new Date().getHours();
 
   let greeting;

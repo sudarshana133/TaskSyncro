@@ -1,13 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/context/UserContext";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-const Navbar = () => {
-  const { user } = useUser();
+const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
 
   if (!user) {
@@ -15,7 +13,7 @@ const Navbar = () => {
   }
 
   const handleDashboardClick = (e: any) => {
-    e.stopPropagation(); // Prevent outer div click
+    e.stopPropagation();
     router.push("/dashboard");
   };
 
@@ -34,7 +32,13 @@ const Navbar = () => {
             <h1 className="text-[15px] sm:text-xl font-bold">TaskSyncro</h1>
           </div>
         </Link>
-        <div className="flex items-center" onClick={handleDashboardClick}>
+
+        <div
+          className="flex items-center"
+          onClick={(e) => {
+            handleDashboardClick(e);
+          }}
+        >
           {user.avatar && (
             <Image
               width={80}
@@ -56,12 +60,13 @@ const Navbar = () => {
               Create <ArrowRight />
             </Button>
           </div>
+
           <Button
+            className="rounded-full w-9 h-9"
             onClick={(e) => {
               e.stopPropagation();
               router.push("/dashboard/profile");
             }}
-            className="rounded-full w-9 h-9"
           >
             {user.name.charAt(0).toUpperCase() || "U"}
           </Button>

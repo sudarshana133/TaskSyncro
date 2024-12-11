@@ -1,28 +1,37 @@
-"use client";
-import { useUser } from "@/context/UserContext";
-import { useSearchParams } from "next/navigation";
-import { ModuleCreation } from "@/components/ModuleCreation";
 import { Suspense } from "react";
+import { ModuleCreation } from "@/components/ModuleCreation";
+import { getLoggedInUser } from "@/lib/appwrite";
 
-const Page = () => {
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   return (
     <Suspense fallback={<h1>Loading...</h1>}>
-      <ModulePage/>
+      <ModulePage params={params} searchParams={searchParams} />
     </Suspense>
-  )  
-};
+  );
+}
 
-export default Page;
-
-const ModulePage = ()=>{
-  const { user } = useUser();
-  const params = useSearchParams();
-  const newParam = params.get("new");
+const ModulePage = async ({
+  params,
+  searchParams,
+}: {
+  params: { slug: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
+  const user = await getLoggedInUser();
 
   if (!user) return null;
-  
+
+  const newParam = searchParams.new === "true";
+
   if (newParam) {
     return <ModuleCreation user={user} />;
   }
-  return <div>Page</div>;
-}
+
+  return <div>Module Page for {params.slug}</div>;
+};

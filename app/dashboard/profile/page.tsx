@@ -1,43 +1,34 @@
-"use client";
 import { Button } from "@/components/ui/button";
-import { useUser } from "@/context/UserContext";
-import { account } from "@/lib/appwrite";
-import React from "react";
+import { getLoggedInUser } from "@/lib/appwrite";
+import { redirect } from "next/navigation";
+import axios from "axios";
+import Logout from "@/components/Logout";
+import { cookies } from "next/headers";
 
-const Page = () => {
-  const { user } = useUser();
+const Page = async () => {
+  const user: User | null = await getLoggedInUser();
+
+  if (!user || user === null) {
+    redirect("/login");
+  }
   return (
-    <div>
-      <div className="p-4">
-        <h2 className="text-2xl font-bold">Profile</h2>
-        <div className="mt-4">
+    <div className="p-4">
+      <h2 className="text-2xl font-bold">Profile</h2>
+      <div className="mt-4">
+        <p>
+          <strong>Name:</strong> {user?.name}
+        </p>
+        <p>
+          <strong>Email:</strong> {user?.email}
+        </p>
+        {user?.points !== undefined && (
           <p>
-            <strong>Name:</strong> {user?.name}
+            <strong>Points:</strong> {user.points}
           </p>
-          <p>
-            <strong>Email:</strong> {user?.email}
-          </p>
-          {user?.points !== undefined && (
-            <p>
-              <strong>Points:</strong> {user.points}
-            </p>
-          )}
-          {user?.role && (
-            <p>
-              <strong>Role:</strong> {user.role}
-            </p>
-          )}
-        </div>
-        <Button
-          onClick={async () => {
-            await account.deleteSession("current");
-            window.location.href = "/login";
-          }}
-          className="mt-4 bg-red-500 text-white rounded px-4 py-2"
-        >
-          Logout
-        </Button>
+        )}
       </div>
+      {/* Logout Button */}
+      <Logout/>
     </div>
   );
 };
