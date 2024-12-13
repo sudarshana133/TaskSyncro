@@ -3,26 +3,24 @@ import { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const session = request.cookies.get("session");
-
   const { pathname } = request.nextUrl;
 
+  // If user is logged in
   if (session) {
+    // Redirect logged-in users away from auth pages
     if (pathname === "/login" || pathname === "/signup") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    if (pathname === "/") {
-      return NextResponse.next();
-    }
-
-    if (pathname === "/dashboard") {
-      return NextResponse.next();
-    }
+    // Allow access to all other routes for logged-in users
+    return NextResponse.next();
   }
 
+  // If user is not logged in
   if (pathname === "/login" || pathname === "/signup" || pathname === "/") {
     return NextResponse.next();
   }
 
+  // Redirect unauthenticated users to login
   return NextResponse.redirect(new URL("/login", request.url));
 }
 
