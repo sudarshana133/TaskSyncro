@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
             secure: process.env.NODE_ENV === "production",
             path: "/",
             expires: new Date(session.expire),
+            sameSite: "strict"
         });
         return response;
     } catch (error: any) {
