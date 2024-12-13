@@ -1,69 +1,46 @@
 "use client";
 
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Trash } from "lucide-react";
-import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
+import {
+  deleteModuleResource,
+  fetchModuleResources,
+} from "@/utils/module-resource-util";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface ModulePreviewProps {
   slug: string;
   isEdit?: boolean;
   resources: ModuleResource[];
-  setResources: Dispatch<SetStateAction<ModuleResource[]>>;
 }
 
 const ModulePreview = ({
   slug,
-  isEdit,
+  isEdit = false,
   resources,
-  setResources,
 }: ModulePreviewProps) => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-
-  const fetchResources = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(`/api/modules/${slug}`);
-      setResources(response.data.resources || []);
-    } catch (err: any) {
-      console.log("Failed to fetch resources:", err);
-      setError(err.response?.data?.error || "Failed to load resources");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  const router = useRouter();
   const handleDelete = async (id: string) => {
     try {
-      const res = await axios.delete(`/api/modules/${slug}`, {
-        data: {
-          moduleResourceId: id,
-        },
-      });
-      setResources((resources) => resources.filter((r) => r.$id !== id));
+      await deleteModuleResource(id);
       toast({
-        title: "Success!",
-        description: res.data.message,
+        title: "Deleted",
+        description: "Resource successfully deleted.",
         className: "bg-green-400",
       });
+      router.refresh();
     } catch (error: any) {
       toast({
-        title: "Error!",
-        description: error.message || "Failed to delete content",
+        title: "Error",
+        description: error.message || "Failed to delete the resource.",
         variant: "destructive",
       });
     }
   };
-
-  useEffect(() => {
-    fetchResources();
-  }, [slug]);
 
   return (
     <Card className="max-h-[calc(100vh-210px)] shadow-lg transition-shadow duration-300 hover:shadow-xl flex flex-col">
@@ -72,7 +49,9 @@ const ModulePreview = ({
           Module Resources
           {isEdit && (
             <Button
-              onClick={fetchResources}
+              onClick={() => {
+                router.refresh();
+              }}
               variant="outline"
               size="sm"
               className="transition-colors duration-200 ease-in-out hover:bg-primary hover:text-primary-foreground"
@@ -83,21 +62,7 @@ const ModulePreview = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow overflow-y-auto pt-6 pb-6 px-6">
-        {loading && (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, index) => (
-              <div key={index} className="flex items-center space-x-4">
-                <Skeleton className="h-20 w-32 rounded-md" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-48" />
-                  <Skeleton className="h-4 w-40" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {!loading && resources.length > 0 ? (
+        {resources.length > 0 ? (
           <ul className="space-y-4">
             {resources.map((resource: ModuleResource) => (
               <li

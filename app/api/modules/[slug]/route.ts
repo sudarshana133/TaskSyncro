@@ -1,6 +1,6 @@
-import { database } from "@/lib/appwrite";
 import { NextRequest, NextResponse } from "next/server";
 import { Query } from "appwrite";
+import { database } from "@/lib/appwrite-server";
 
 const database_id = process.env.NEXT_PUBLIC_DATABASE_ID!;
 const collection_id = process.env.NEXT_PUBLIC_MODULE_RESOURCES_COLLECTION_ID!;

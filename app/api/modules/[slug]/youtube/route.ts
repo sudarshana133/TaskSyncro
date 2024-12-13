@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { database, ID } from "@/lib/appwrite";
 import { validateURL } from "@/lib/validate-youtube-url";
+import { database } from "@/lib/appwrite-server";
+import { ID } from "node-appwrite";
 
 const database_id = process.env.NEXT_PUBLIC_DATABASE_ID!;
 const collection_id = process.env.NEXT_PUBLIC_MODULE_RESOURCES_COLLECTION_ID!;
