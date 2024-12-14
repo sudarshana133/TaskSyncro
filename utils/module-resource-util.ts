@@ -89,6 +89,7 @@ export async function addDoc(slug: string, file: File, title: string) {
       title,
       fileType: file.type,
       createdAt: new Date().toISOString(),
+      module: slug,
     };
 
     const databaseRecord = await database.createDocument(
