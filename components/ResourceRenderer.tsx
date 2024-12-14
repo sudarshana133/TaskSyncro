@@ -1,12 +1,25 @@
 "use client";
+import { useEffect } from "react";
+import { useModuleResource } from "@/context/ModuleResourceContext";
 import { Loader2 } from "lucide-react";
 import ReactPlayer from "react-player";
+import DocViewer from "./DocViewer";
 
 export function ResourceRenderer({
   resources,
 }: {
   resources: ModuleResource[];
 }) {
+  const { currentResource, setCurrentResource } = useModuleResource();
+
+  // Set the current resource to the first one if not already set
+  useEffect(() => {
+    if (!currentResource && resources.length > 0) {
+      setCurrentResource(resources[0]);
+    }
+  }, [currentResource, resources, setCurrentResource]);
+
+  // Handle case where no resources are available
   if (resources.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
@@ -15,17 +28,25 @@ export function ResourceRenderer({
     );
   }
 
-  const firstResource = resources[0];
+  // If the current resource is not ready yet
+  if (!currentResource) {
+    return (
+      <div className="flex items-center justify-center h-64 bg-gray-100 rounded-lg">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
-  switch (firstResource.type) {
+  // Render the current resource based on its type
+  switch (currentResource.type) {
     case "youtube":
       return (
         <div className="relative w-full pt-[56.25%]">
           <ReactPlayer
-            url={firstResource.url}
+            url={currentResource.url}
             width="100%"
             height="100%"
-            className="absolute top-0 left-0 rounded-lg"
+            className="absolute top-0 left-0 rounded-lg overflow-hidden"
             controls
           />
         </div>
@@ -33,9 +54,10 @@ export function ResourceRenderer({
     case "document":
       return (
         <div className="bg-white rounded-lg shadow-lg p-6">
-          <h1 className="text-2xl font-bold text-center text-gray-700">
-            PDF Preview (Placeholder)
-          </h1>
+          {/* <DocViewer
+            url={currentResource.url}
+            fileType={currentResource.fileType!}
+          /> */}
         </div>
       );
     default:

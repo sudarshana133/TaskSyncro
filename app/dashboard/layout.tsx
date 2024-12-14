@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import { getLoggedInUser } from "@/lib/appwrite";
-import { notFound, redirect } from "next/navigation";
 import React, { ReactNode } from "react";
 
 const layout = async ({ children }: { children: ReactNode }) => {

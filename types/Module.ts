@@ -18,6 +18,7 @@ declare global {
         updatedAt: string;
         moduleId: string;
         type: "youtube" | "document";
+        fileType?: string;
     }
 }
 

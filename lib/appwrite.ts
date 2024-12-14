@@ -26,7 +26,7 @@ export async function getLoggedInUser(): Promise<User | null> {
     const { account } = await createSessionClient();
     return await account.get();
   } catch (error) {
-    console.error("Error in getLoggedInUser:", error);
+    console.log("Error in getLoggedInUser:", error);
     return null;
   }
 }
