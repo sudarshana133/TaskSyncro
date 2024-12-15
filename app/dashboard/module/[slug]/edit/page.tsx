@@ -11,8 +11,8 @@ const YouTubeResourcePage = async ({
 }) => {
   const slug = (await params).slug;
   const user = await getLoggedInUser();
-  const module: Module | null = await getModule(slug);
-  if (!module || !module?.modules) {
+  const moduleData: Module | null = await getModule(slug);
+  if (!moduleData || !moduleData?.modules) {
     return (
       <div>
         <h1>No module resources</h1>
@@ -24,13 +24,13 @@ const YouTubeResourcePage = async ({
 
   return (
     <div>
-      {user?.name === module.creator ? (
+      {user?.name === moduleData.creator ? (
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-7xl mx-auto grid gap-8 lg:grid-cols-[400px,1fr]">
             {/* YouTube Resource Form */}
             <AddModuleResource slug={slug} />
             <ModulePreview
-              resources={module.modules}
+              resources={moduleData.modules}
               isEdit={true}
               slug={slug}
             />

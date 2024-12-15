@@ -10,8 +10,8 @@ import { Suspense } from "react";
 const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
   const user = await getLoggedInUser();
-  const module: Module | null = await getModule(slug);
-  if (!module || !module?.modules) {
+  const moduleData: Module | null = await getModule(slug);
+  if (!moduleData || !moduleData?.modules) {
     return (
       <div>
         <h1>No module resources</h1>
@@ -25,7 +25,7 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
         {/* Conditional Rendering of Resource Type */}
         <div className="flex-1 lg:w-2/3 xl:w-3/4">
           <Suspense fallback={<LoadingState />}>
-            <ResourceRenderer resources={module.modules} />
+            <ResourceRenderer resources={moduleData.modules} />
           </Suspense>
         </div>
 
@@ -33,12 +33,12 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
         <div className="flex-1 lg:w-1/3 xl:w-1/4">
           <ModulePreview
             slug={slug}
-            resources={module.modules}
+            resources={moduleData.modules}
             isEdit={false}
           />
         </div>
       </div>
-      {module?.creator === user?.name ? (
+      {moduleData?.creator === user?.name ? (
         <Button asChild>
           <Link
             href={`/dashboard/module/${slug}/edit`}
