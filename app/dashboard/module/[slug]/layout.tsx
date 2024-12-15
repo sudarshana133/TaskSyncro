@@ -1,7 +1,15 @@
-"use client"
+"use client";
+import MusicPlayer from "@/components/MusicPlayer";
 import { ModuleResourceProvider } from "@/context/ModuleResourceContext";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
-  return <ModuleResourceProvider>{children}</ModuleResourceProvider>;
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div>
+      <ModuleResourceProvider>
+        {children}
+        <MusicPlayer />
+      </ModuleResourceProvider>
+    </div>
+  );
 };
-export default layout;
+export default Layout;

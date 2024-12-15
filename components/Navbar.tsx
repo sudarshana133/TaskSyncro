@@ -1,76 +1,119 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
+import MusicSearch from "./MusicSearch";
 
 const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   if (!user) {
     return null;
   }
 
-  const handleDashboardClick = (e: any) => {
+  const handleDashboardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     router.push("/dashboard");
+    setIsMenuOpen(false);
+  };
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleCreateModule = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push("/dashboard/module?new=true");
+    setIsMenuOpen(false);
+  };
+
+  const handleProfileClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push("/dashboard/profile");
+    setIsMenuOpen(false);
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center p-4 bg-blue-500 text-white hover:cursor-pointer">
-        <Link href="/dashboard">
-          <div className="flex items-center space-x-3 hover:cursor-pointer">
-            <Image
-              width={50}
-              height={50}
-              alt="logo"
-              src="/favicon.jpg"
-              className="rounded-lg shadow-md w-10 sm:w-14"
-            />
-            <h1 className="text-[15px] sm:text-xl font-bold">TaskSyncro</h1>
-          </div>
+    <div className="bg-blue-500 text-white">
+      <div className="flex justify-between items-center p-4 relative">
+        {/* Logo Section */}
+        <Link href="/dashboard" className="flex items-center space-x-3">
+          <Image
+            width={50}
+            height={50}
+            alt="logo"
+            src="/favicon.jpg"
+            className="rounded-lg shadow-md w-10 sm:w-14"
+          />
+          <h1 className="text-[15px] sm:text-xl font-bold">TaskSyncro</h1>
         </Link>
 
-        <div
-          className="flex items-center"
-          onClick={(e) => {
-            handleDashboardClick(e);
-          }}
-        >
-          {user.avatar && (
-            <Image
-              width={80}
-              height={80}
-              src={user.avatar}
-              alt="User Avatar"
-              className="rounded-full w-8 h-8 mr-2"
-            />
-          )}
-          <div className="mr-2">
+        {/* Desktop Music Search - Hidden on mobile */}
+        <div className="hidden md:block">
+          <MusicSearch />
+        </div>
+
+        {/* User Actions */}
+        <div className="flex items-center space-x-2">
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden">
+            <Button
+              onClick={toggleMenu}
+              variant="ghost"
+              className="p-2 text-white hover:bg-blue-600"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </Button>
+          </div>
+
+          {/* Desktop Actions */}
+          <div className="hidden md:flex items-center space-x-2">
             <Button
               variant="secondary"
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push("/dashboard/module?new=true");
-              }}
+              onClick={handleCreateModule}
               className="px-2 sm:px-4"
             >
               Create <ArrowRight />
             </Button>
-          </div>
 
-          <Button
-            className="rounded-full w-9 h-9"
-            onClick={(e) => {
-              e.stopPropagation();
-              router.push("/dashboard/profile");
-            }}
-          >
-            {user.name.charAt(0).toUpperCase() || "U"}
-          </Button>
+            <Button
+              className="rounded-full w-9 h-9"
+              onClick={handleProfileClick}
+            >
+              {user.name.charAt(0).toUpperCase() || "U"}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Dropdown Menu */}
+        {isMenuOpen && (
+          <div className="absolute top-full left-0 right-0 bg-blue-500 md:hidden z-50">
+            <div className="p-4">
+              {/* Mobile Music Search */}
+              <div className="mb-4">
+                <MusicSearch />
+              </div>
+
+              {/* Mobile Action Buttons */}
+              <div className="space-y-2">
+                <Button
+                  variant="secondary"
+                  onClick={handleCreateModule}
+                  className="w-full"
+                >
+                  Create New Module
+                </Button>
+                <Button onClick={handleProfileClick} className="w-full">
+                  View Profile
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

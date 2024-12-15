@@ -76,7 +76,7 @@ const DocViewer = ({ fileId }: { fileId: string }) => {
           Previous
         </Button>
 
-        <span className="text-gray-700 font-medium">
+        <span className="text-gray-700 font-medium text-sm">
           Page {pageNumber} of {numPages}
         </span>
 

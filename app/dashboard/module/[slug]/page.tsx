@@ -25,7 +25,11 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
         {/* Conditional Rendering of Resource Type */}
         <div className="flex-1 lg:w-2/3 xl:w-3/4">
           <Suspense fallback={<LoadingState />}>
-            <ResourceRenderer resources={moduleData.modules} />
+            {moduleData?.modules ? (
+              <ResourceRenderer resources={moduleData.modules} />
+            ) : (
+              <div>No resources available.</div>
+            )}
           </Suspense>
         </div>
 
