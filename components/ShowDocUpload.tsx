@@ -98,7 +98,7 @@ export const ShowDocUpload = ({ slug }: { slug: string }) => {
               htmlFor="fileInput"
               className="text-sm font-medium text-gray-700"
             >
-              Document
+              PDF Document
             </label>
             <Input
               id="fileInput"

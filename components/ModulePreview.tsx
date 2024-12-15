@@ -26,9 +26,9 @@ const ModulePreview = ({
   const { toast } = useToast();
   const { setCurrentResource } = useModuleResource();
   const router = useRouter();
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: string, url?: string) => {
     try {
-      await deleteModuleResource(id);
+      await deleteModuleResource(id, url);
       toast({
         title: "Deleted",
         description: "Resource successfully deleted.",
@@ -47,7 +47,7 @@ const ModulePreview = ({
     setCurrentResource(selectedResource);
   }
   return (
-    <Card className="max-h-[calc(100vh-210px)] shadow-lg transition-shadow duration-300 hover:shadow-xl flex flex-col">
+    <Card className="max-h-screen shadow-lg transition-shadow duration-300 hover:shadow-xl flex flex-col">
       <CardHeader className="bg-secondary text-secondary-foreground rounded-t-lg">
         <CardTitle className="text-xl sm:text-2xl font-bold flex items-center justify-between">
           Module Resources
@@ -103,7 +103,12 @@ const ModulePreview = ({
                   {isEdit && (
                     <div
                       className="text-red-600 hover:cursor-pointer"
-                      onClick={() => handleDelete(resource.$id)}
+                      onClick={() => {
+                        handleDelete(
+                          resource.$id,
+                          resource.type === "document" ? resource.url : undefined
+                        );
+                      }}
                     >
                       <Trash />
                     </div>

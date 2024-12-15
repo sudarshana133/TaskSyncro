@@ -54,10 +54,7 @@ export function ResourceRenderer({
     case "document":
       return (
         <div className="bg-white rounded-lg shadow-lg p-6">
-          {/* <DocViewer
-            url={currentResource.url}
-            fileType={currentResource.fileType!}
-          /> */}
+          <DocViewer fileId={currentResource.url} />
         </div>
       );
     default:

@@ -1,40 +1,55 @@
 import ModulePreview from "@/components/ModulePreview";
 import { LoadingState, ResourceRenderer } from "@/components/ResourceRenderer";
 import { Button } from "@/components/ui/button";
-import {
-  deleteModuleResource,
-  fetchModuleResources,
-} from "@/utils/module-resource-util";
+import { getLoggedInUser } from "@/lib/appwrite";
+import { getModule } from "@/utils/module-util";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
 const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
-  const resources = await fetchModuleResources(slug);
+  const user = await getLoggedInUser();
+  const module: Module | null = await getModule(slug);
+  if (!module || !module?.modules) {
+    return (
+      <div>
+        <h1>No module resources</h1>
+        <p>Contact admin {user?.email}</p>
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto px-4 py-8 relative">
       <div className="flex flex-col lg:flex-row w-full gap-8 mt-6">
         {/* Conditional Rendering of Resource Type */}
-        <div className="flex-1 lg:w-2/3">
+        <div className="flex-1 lg:w-2/3 xl:w-3/4">
           <Suspense fallback={<LoadingState />}>
-            <ResourceRenderer resources={resources} />
+            <ResourceRenderer resources={module.modules} />
           </Suspense>
         </div>
 
         {/* Module Preview */}
-        <div className="flex-1 lg:w-1/3">
-          <ModulePreview slug={slug} resources={resources} isEdit={false} />
+        <div className="flex-1 lg:w-1/3 xl:w-1/4">
+          <ModulePreview
+            slug={slug}
+            resources={module.modules}
+            isEdit={false}
+          />
         </div>
       </div>
-      <Button asChild>
-        <Link
-          href={`/dashboard/module/${slug}/edit`}
-          className="absolute top-2 right-4"
-        >
-          Edit <Pencil />
-        </Link>
-      </Button>
+      {module?.creator === user?.name ? (
+        <Button asChild>
+          <Link
+            href={`/dashboard/module/${slug}/edit`}
+            className="absolute top-2 right-4"
+          >
+            Edit <Pencil />
+          </Link>
+        </Button>
+      ) : (
+        <p></p>
+      )}
     </div>
   );
 };
