@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import { ArrowRight, Menu, X } from "lucide-react";
@@ -10,10 +10,8 @@ import MusicSearch from "./MusicSearch";
 const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  if (!user) {
-    return null;
-  }
+  const [isPlayListPage, setIsPlaylistPage] = useState(false);
+  const pathname = usePathname();
 
   const handleDashboardClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -36,7 +34,24 @@ const Navbar = ({ user }: { user: User }) => {
     router.push("/dashboard/profile");
     setIsMenuOpen(false);
   };
+  const handlePlaylistClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    router.push("/dashboard/playlist");
+    setIsMenuOpen(false);
+  };
 
+  useEffect(() => {
+    if (pathname === "/dashboard/playlist") {
+      setIsPlaylistPage(true);
+    } else {
+      setIsPlaylistPage(false);
+    }
+  }, [pathname]);
+
+  if (!user) {
+    return null;
+  }
+  
   return (
     <div className="bg-blue-500 text-white">
       <div className="flex justify-between items-center p-4 relative">
@@ -53,9 +68,11 @@ const Navbar = ({ user }: { user: User }) => {
         </Link>
 
         {/* Desktop Music Search - Hidden on mobile */}
-        <div className="hidden md:block">
-          <MusicSearch />
-        </div>
+        {!isPlayListPage && (
+          <div className="hidden md:block">
+            <MusicSearch />
+          </div>
+        )}
 
         {/* User Actions */}
         <div className="flex items-center space-x-2">
@@ -72,12 +89,15 @@ const Navbar = ({ user }: { user: User }) => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-2">
+            <Button variant="default" onClick={handlePlaylistClick}>
+              Create Playlist
+            </Button>
             <Button
               variant="secondary"
               onClick={handleCreateModule}
               className="px-2 sm:px-4"
             >
-              Create <ArrowRight />
+              Create Module <ArrowRight />
             </Button>
 
             <Button
@@ -94,12 +114,21 @@ const Navbar = ({ user }: { user: User }) => {
           <div className="absolute top-full left-0 right-0 bg-blue-500 md:hidden z-50">
             <div className="p-4">
               {/* Mobile Music Search */}
-              <div className="mb-4">
-                <MusicSearch />
-              </div>
+              {!isPlayListPage && (
+                <div className="mb-4">
+                  <MusicSearch />
+                </div>
+              )}
 
               {/* Mobile Action Buttons */}
               <div className="space-y-2">
+                <Button
+                  className="w-full"
+                  variant="default"
+                  onClick={handlePlaylistClick}
+                >
+                  Create Playlist
+                </Button>
                 <Button
                   variant="secondary"
                   onClick={handleCreateModule}

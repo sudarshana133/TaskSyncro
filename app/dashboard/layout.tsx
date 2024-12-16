@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { getLoggedInUser } from "@/lib/appwrite";
 import React, { ReactNode } from "react";
+import MusicPlayer from "@/components/MusicPlayer";
 import { MusicProvider } from "@/context/MusicContext";
 
 const layout = async ({ children }: { children: ReactNode }) => {
@@ -14,6 +15,7 @@ const layout = async ({ children }: { children: ReactNode }) => {
       <MusicProvider>
         <Navbar user={user} />
         {children}
+        <MusicPlayer />
       </MusicProvider>
     </div>
   );
