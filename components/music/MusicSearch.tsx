@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "./ui/input";
 import axios from "axios";
 import useDebounce from "@/context/useDebounce";
 import { useMusic } from "@/context/MusicContext";
 import { Search, X } from "lucide-react";
+import { Input } from "../ui/input";
 
 const MusicSearch = () => {
   const [songs, setSongs] = useState<Song[] | null>(null);
@@ -66,9 +66,9 @@ const MusicSearch = () => {
           className="pr-10 pl-10 bg-white text-black rounded-md w-full"
           placeholder="Search songs..."
         />
-        <Search 
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" 
-          size={20} 
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          size={20}
         />
         {songName && (
           <X
@@ -93,7 +93,9 @@ const MusicSearch = () => {
                 className="w-12 h-12 rounded-md object-cover flex-shrink-0"
               />
               <div className="flex-1 overflow-hidden">
-                <h4 className="font-semibold text-sm text-black truncate">{song.name}</h4>
+                <h4 className="font-semibold text-sm text-black truncate">
+                  {song.name}
+                </h4>
                 <p className="text-xs text-gray-500 truncate">
                   {song.artists.primary[0]?.name || "Unknown Artist"}
                 </p>

@@ -1,9 +1,31 @@
 "use client";
 import { useMusic } from "@/context/MusicContext";
 import { useState, useRef, useEffect } from "react";
-import { Play, Pause, ChevronUp, ChevronDown, Volume2 } from 'lucide-react';
+import {
+  Play,
+  Pause,
+  ChevronUp,
+  ChevronDown,
+  Volume2,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const MusicPlayer = () => {
   const { song } = useMusic();
@@ -14,7 +36,6 @@ const MusicPlayer = () => {
 
   useEffect(() => {
     if (song && audioRef.current) {
-      console.log("Setting up audio for song:", song.name);
       try {
         const highestQualityUrl =
           song.downloadUrl[song.downloadUrl.length - 1].url;
@@ -24,7 +45,6 @@ const MusicPlayer = () => {
           console.error("Error attempting to play:", error);
         });
         setIsPlaying(true);
-        console.log("Audio setup complete and playing started.");
       } catch (error) {
         console.error("Error setting up audio:", error);
       }
@@ -32,14 +52,11 @@ const MusicPlayer = () => {
   }, [song]);
 
   const togglePlayPause = () => {
-    console.log("Toggling play/pause. Current state:", isPlaying);
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
-        console.log("Audio paused.");
       } else {
         audioRef.current.play();
-        console.log("Audio playing.");
       }
       setIsPlaying(!isPlaying);
     }
@@ -47,7 +64,6 @@ const MusicPlayer = () => {
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
-    console.log("Changing volume to:", newVolume);
     setVolume(newVolume);
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
@@ -55,12 +71,10 @@ const MusicPlayer = () => {
   };
 
   const toggleCollapse = () => {
-    console.log("Toggling collapse. Current state:", isCollapsed);
     setIsCollapsed(!isCollapsed);
   };
 
   if (!song) {
-    console.log("No song available to play.");
     return null;
   }
 
@@ -101,62 +115,76 @@ const MusicPlayer = () => {
           </button>
         </div>
       ) : (
-        <div className="p-4">
-          <div className="flex items-center space-x-4 mb-4">
-            <Image
-              src={
-                song.image[song.image.length - 1].url ||
-                "/placeholder.svg?height=64&width=64"
-              }
-              alt="Album Art"
-              width={80}
-              height={80}
-              className="rounded-lg object-cover"
-            />
-            <div className="flex-1 overflow-hidden">
-              <p className="text-sm font-medium truncate">{song.name}</p>
-              <p className="text-xs text-gray-400 truncate">
-                {song.artists.primary[0].name}
-              </p>
-            </div>
-            <button
-              onClick={toggleCollapse}
-              className="text-gray-400 hover:text-white transition-colors"
-              aria-label="Collapse player"
-            >
-              <ChevronDown size={20} />
-            </button>
-          </div>
-
-          <div className="flex items-center space-x-4 mb-2">
-            <button
-              onClick={togglePlayPause}
-              className="bg-blue-500 p-2 rounded-full hover:bg-blue-600 transition-colors"
-              aria-label={isPlaying ? "Pause" : "Play"}
-            >
-              {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-            </button>
-
-            <div className="flex-1 flex items-center space-x-2">
-              <Volume2 size={16} className="text-gray-400" />
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
-                onChange={handleVolumeChange}
-                className="flex-1 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
-                aria-label="Volume"
+        <ContextMenu>
+          <div className="p-4">
+            <div className="flex items-center space-x-4 mb-4">
+              <Image
+                src={
+                  song.image[song.image.length - 1].url ||
+                  "/placeholder.svg?height=64&width=64"
+                }
+                alt="Album Art"
+                width={80}
+                height={80}
+                className="rounded-lg object-cover"
               />
+              <ContextMenuTrigger>
+                <div className="flex-1 overflow-hidden hover:underline">
+                  <p className="text-sm font-medium truncate">{song.name}</p>
+                  <p className="text-xs text-gray-400 truncate">
+                    {song.artists.primary[0].name}
+                  </p>
+                </div>
+              </ContextMenuTrigger>
+              <button
+                onClick={toggleCollapse}
+                className="text-gray-400 hover:text-white transition-colors"
+                aria-label="Collapse player"
+              >
+                <ChevronDown size={20} />
+              </button>
+            </div>
+
+            <div className="flex items-center space-x-4 mb-2">
+              <button
+                onClick={togglePlayPause}
+                className="bg-blue-500 p-2 rounded-full hover:bg-blue-600 transition-colors"
+                aria-label={isPlaying ? "Pause" : "Play"}
+              >
+                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+              </button>
+
+              <div className="flex-1 flex items-center space-x-2">
+                <Volume2 size={16} className="text-gray-400" />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="flex-1 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer"
+                  aria-label="Volume"
+                />
+              </div>
             </div>
           </div>
-        </div>
+          <ContextMenuContent>
+            <ContextMenuSub>
+              <ContextMenuSubTrigger inset>More Tools</ContextMenuSubTrigger>
+              <ContextMenuSubContent className="w-48">
+                <ContextMenuItem>Create Shortcut...</ContextMenuItem>
+                <ContextMenuItem>Name Window...</ContextMenuItem>
+                <ContextMenuSeparator />
+                <ContextMenuItem>Developer Tools</ContextMenuItem>
+              </ContextMenuSubContent>
+            </ContextMenuSub>
+          </ContextMenuContent>
+        </ContextMenu>
       )}
-      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
+      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} loop />
     </div>
   );
 };
 
 export default MusicPlayer;
-

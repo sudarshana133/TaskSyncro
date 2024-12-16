@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import Image from "next/image";
 import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
-import MusicSearch from "./MusicSearch";
+import MusicSearch from "./music/MusicSearch";
 
 const Navbar = ({ user }: { user: User }) => {
   const router = useRouter();
@@ -36,12 +36,12 @@ const Navbar = ({ user }: { user: User }) => {
   };
   const handlePlaylistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    router.push("/dashboard/playlist");
+    router.push("/dashboard/music");
     setIsMenuOpen(false);
   };
 
   useEffect(() => {
-    if (pathname === "/dashboard/playlist") {
+    if (pathname === "/dashboard/music") {
       setIsPlaylistPage(true);
     } else {
       setIsPlaylistPage(false);

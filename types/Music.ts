@@ -46,5 +46,10 @@ declare global {
         quality: string; // e.g., "12kbps", "320kbps"
         url: string;
     };
+    type Playlist = {
+        $id: string;
+        title: string;
+        songs: Song[] | []
+    }
 }
 export { };
