@@ -1,4 +1,3 @@
-
 import BottomBar from "@/components/music/BottomBar";
 import Sidebar from "@/components/music/Sidebar";
 import { PlaylistProvider } from "@/context/Playlist";

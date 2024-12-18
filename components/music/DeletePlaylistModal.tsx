@@ -17,12 +17,12 @@ interface DeleteAlertProps {
 const DeleteAlert = ({ open, onClose, onConfirm }: DeleteAlertProps) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md text-center bg-gray-800 text-gray-100 rounded-lg shadow-lg">
+      <DialogContent className="max-w-md text-center bg-slate-300 text-black rounded-lg shadow-lg">
         <DialogHeader>
           <DialogTitle className="text-xl text-red-500">
             Are you absolutely sure?
           </DialogTitle>
-          <DialogDescription className="text-gray-300">
+          <DialogDescription className="text-gray-800">
             This action cannot be undone. This will permanently delete this
             playlist.
           </DialogDescription>
@@ -30,7 +30,8 @@ const DeleteAlert = ({ open, onClose, onConfirm }: DeleteAlertProps) => {
         <DialogFooter className="space-x-4">
           <Button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-300 border border-gray-500"
+            className="text-black hover:text-gray-700 border border-gray-500"
+            variant={"secondary"}
           >
             Cancel
           </Button>

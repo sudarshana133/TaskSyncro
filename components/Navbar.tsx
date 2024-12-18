@@ -31,7 +31,7 @@ const Navbar = ({ user }: { user: User }) => {
 
   const handleProfileClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    router.push("/dashboard/profile");
+    router.push("/dashboard/music/profile");
     setIsMenuOpen(false);
   };
   const handlePlaylistClick = (e: React.MouseEvent) => {
@@ -41,17 +41,17 @@ const Navbar = ({ user }: { user: User }) => {
   };
 
   useEffect(() => {
+    const musicDetailPathRegex = /^\/dashboard\/music\/[^/]+$/;
+    setIsPlaylistPage(musicDetailPathRegex.test(pathname));
     if (pathname === "/dashboard/music") {
       setIsPlaylistPage(true);
-    } else {
-      setIsPlaylistPage(false);
     }
   }, [pathname]);
 
   if (!user) {
     return null;
   }
-  
+
   return (
     <div className="bg-blue-500 text-white">
       <div className="flex justify-between items-center p-4 relative">
@@ -70,7 +70,7 @@ const Navbar = ({ user }: { user: User }) => {
         {/* Desktop Music Search - Hidden on mobile */}
         {!isPlayListPage && (
           <div className="hidden md:block">
-            <MusicSearch />
+            <MusicSearch maxRes={5} isHideOn />
           </div>
         )}
 
@@ -113,13 +113,6 @@ const Navbar = ({ user }: { user: User }) => {
         {isMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-blue-500 md:hidden z-50">
             <div className="p-4">
-              {/* Mobile Music Search */}
-              {!isPlayListPage && (
-                <div className="mb-4">
-                  <MusicSearch />
-                </div>
-              )}
-
               {/* Mobile Action Buttons */}
               <div className="space-y-2">
                 <Button
@@ -135,9 +128,6 @@ const Navbar = ({ user }: { user: User }) => {
                   className="w-full"
                 >
                   Create New Module
-                </Button>
-                <Button onClick={handleProfileClick} className="w-full">
-                  View Profile
                 </Button>
               </div>
             </div>

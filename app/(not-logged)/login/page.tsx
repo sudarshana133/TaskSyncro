@@ -21,7 +21,6 @@ const LoginPage = () => {
         email,
         password,
       });
-      console.log(res.data);
       router.push("/dashboard");
     } catch (error: any) {
       toast({

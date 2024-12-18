@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,25 +12,35 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createPlaylist, editPlaylist } from "@/utils/music";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export function CreatePlaylist({
   isOpen,
   onClose,
   user,
-  refreshPlaylists,
   playlist,
 }: {
   isOpen: boolean;
   onClose: () => void;
   user: User;
-  refreshPlaylists: () => void;
   playlist?: Playlist;
 }) {
-  const [title, setTitle] = useState(playlist?.title || "");
+  const [title, setTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const router = useRouter();
+
+  // Reset states when playlist changes or modal opens
+  useEffect(() => {
+    if (playlist) {
+      setTitle(playlist.title || "");
+    } else {
+      setTitle("");
+    }
+    setError(null);
+  }, [playlist, isOpen]);
 
   const handleCreateOrEditPlaylist = async () => {
     if (!title.trim()) {
@@ -52,11 +63,10 @@ export function CreatePlaylist({
         });
       }
 
-      // Reset error state
+      // Reset states and close modal
+      setTitle("");
       setError(null);
-
-      // Explicitly call refresh and close
-      refreshPlaylists();
+      router.refresh();
       onClose();
     } catch (error: any) {
       const errorMessage = error.message || "An error occurred";
@@ -69,12 +79,9 @@ export function CreatePlaylist({
     }
   };
 
-  // Ensure modal closes properly on cancel
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       onClose();
-      setError(null);
-      setTitle(playlist?.title || "");
     }
   };
 
@@ -86,27 +93,34 @@ export function CreatePlaylist({
             {playlist ? "Edit Playlist" : "Create Playlist"}
           </DialogTitle>
           <DialogDescription>
-            {playlist ? "Edit your playlist" : "Create a new playlist"}
+            {playlist
+              ? "Edit the details of your playlist."
+              : "Add a title for your new playlist."}
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col items-start gap-4 justify-center">
-          <Label htmlFor="name" className="text-right">
-            Title
-          </Label>
-          <Input
-            id="name"
-            value={title}
-            placeholder="Add title.."
-            onChange={(e) => {
-              setTitle(e.target.value);
-              setError(null);
-            }}
-          />
-          {error && <p className="text-red-500 text-sm">{error}</p>}
+        <div className="flex flex-col gap-4">
+          <div>
+            <Label htmlFor="name" className="text-right">
+              Title
+            </Label>
+            <Input
+              id="name"
+              value={title}
+              placeholder="Add a title..."
+              onChange={(e) => {
+                setTitle(e.target.value);
+                setError(null); // Clear error on input change
+              }}
+            />
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+          </div>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleCreateOrEditPlaylist}>
             {playlist ? "Save Changes" : "Create"}
+          </Button>
+          <Button variant="ghost" onClick={onClose}>
+            Cancel
           </Button>
         </DialogFooter>
       </DialogContent>

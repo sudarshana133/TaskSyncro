@@ -15,7 +15,7 @@ const layout = async ({ children }: { children: ReactNode }) => {
       <MusicProvider>
         <Navbar user={user} />
         {children}
-        <MusicPlayer />
+        <MusicPlayer user={user} />
       </MusicProvider>
     </div>
   );

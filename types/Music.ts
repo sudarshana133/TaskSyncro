@@ -2,6 +2,7 @@ declare global {
     type Song = {
         id: string;
         name: string;
+        title?: string;
         type: string;
         year: string;
         releaseDate: string | null;
