@@ -8,11 +8,18 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 import { convertToTime } from "@/utils/convertToMin";
-import { Button } from "../ui/button";
-import { MoreHorizontalIcon } from "lucide-react";
 import MusicPlayInPlaylist from "../client/MusicPlayInPlaylist";
+import SongActions from "./SongActions";
 
-const PlaylistSongs = ({ songs }: { songs: Song[] }) => {
+const PlaylistSongs = ({
+  songs,
+  isPublic,
+  playlist,
+}: {
+  songs: Song[];
+  isPublic: boolean;
+  playlist: Playlist;
+}) => {
   return (
     <div className="overflow-x-auto">
       <Table>
@@ -24,7 +31,7 @@ const PlaylistSongs = ({ songs }: { songs: Song[] }) => {
             <TableHead className="hidden sm:table-cell text-right">
               Duration
             </TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            {!isPublic && <TableHead className="text-right">Actions</TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -42,7 +49,7 @@ const PlaylistSongs = ({ songs }: { songs: Song[] }) => {
                 <TableCell className="w-12 text-right font-medium text-gray-500">
                   <div className="flex justify-center items-center">
                     <span className="group-hover:hidden">{index + 1}</span>
-                    <MusicPlayInPlaylist song={song} />
+                    <MusicPlayInPlaylist song={song} playlist={playlist} />
                   </div>
                 </TableCell>
 
@@ -75,15 +82,11 @@ const PlaylistSongs = ({ songs }: { songs: Song[] }) => {
                 </TableCell>
 
                 {/* More Options Button */}
-                <TableCell className="text-right">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="text-gray-600 hover:text-black w-8 h-8"
-                  >
-                    <MoreHorizontalIcon className="w-4 h-4" />
-                  </Button>
-                </TableCell>
+                {!isPublic && (
+                  <TableCell className="hidden sm:table-cell text-right text-gray-600">
+                    <SongActions song={song} />
+                  </TableCell>
+                )}
               </TableRow>
             );
           })}

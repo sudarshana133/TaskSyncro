@@ -1,13 +1,29 @@
 "use client";
+
 import { PlayIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useMusic } from "@/context/MusicContext";
+import { usePlaylist } from "@/context/PlaylistContext";
 
-const MusicPlayInPlaylist = ({ song }: { song: Song }) => {
+const MusicPlayInPlaylist = ({
+  song,
+  playlist,
+}: {
+  song: Song;
+  playlist: Playlist;
+}) => {
   const { setSong } = useMusic();
+  const { setPlaylist, setCurrentSongIndex } = usePlaylist();
+
   const handleMusicPlay = () => {
+    setPlaylist(playlist);
+    const songIndex = playlist.songs.findIndex((s) => s.id === song.id);
+    if (songIndex !== -1) {
+      setCurrentSongIndex(songIndex);
+    }
     setSong(song);
   };
+
   return (
     <div>
       <Button
@@ -20,4 +36,5 @@ const MusicPlayInPlaylist = ({ song }: { song: Song }) => {
     </div>
   );
 };
+
 export default MusicPlayInPlaylist;

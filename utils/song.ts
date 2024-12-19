@@ -1,3 +1,5 @@
+import { database_id, songCollectionId } from "@/constants/environment";
+import { database } from "@/lib/appwrite-server";
 import axios from "axios";
 
 export const getSongFromApi = async (songId: string): Promise<Song> => {
@@ -18,4 +20,14 @@ export const getSongFromApi = async (songId: string): Promise<Song> => {
         throw new Error(error.message);
     }
 };
-
+export const deleteSong = async (songId: string) => {
+    try {
+        if (!songId) {
+            throw new Error("Song ID  not provided");
+        }
+        await database.deleteDocument(database_id,songCollectionId,songId);
+    } catch (error: any) {
+        console.error("Error fetching song from API:", error.message);
+        throw new Error(error.message);
+    }
+}

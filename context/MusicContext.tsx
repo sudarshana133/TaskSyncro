@@ -12,7 +12,7 @@ const MusicContext = createContext<MusicContextType | undefined>(undefined);
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [song, setSong] = useState<Song | undefined>(undefined); // Initialize song as undefined
+  const [song, setSong] = useState<Song | undefined>(undefined);
 
   return (
     <MusicContext.Provider value={{ song, setSong }}>

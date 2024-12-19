@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlayIcon, PauseIcon, HeartIcon } from "lucide-react";
 import MusicSearch from "@/components/music/MusicSearch";
-import { usePlaylist } from "@/context/Playlist";
+import { usePlaylist } from "@/context/PlaylistContext";
 import { getPlaylistSongs } from "@/utils/playlist";
 import { useEffect, useState } from "react";
 import PlaylistSongs from "@/components/music/PlaylistSongs";
@@ -16,7 +16,7 @@ const Page = async ({
   params: Promise<{ playlistId: string }>;
 }) => {
   const playlistId = (await params).playlistId;
-
+  let isPublic = false;
   let playlist, songs;
   if (playlistId.startsWith("public-")) {
     const publicPlaylistId = playlistId.replace("public-", "");
@@ -25,6 +25,7 @@ const Page = async ({
     );
     playlist = data.data;
     songs = playlist.songs;
+    isPublic = true;
   } else {
     playlist = await getPlaylistById(playlistId);
     songs = await getPlaylistSongs(playlistId);
@@ -55,9 +56,9 @@ const Page = async ({
               </div>
               <div className="flex-1 text-center sm:text-left w-full">
                 <h1 className="text-2xl sm:text-4xl font-bold mb-2 sm:mb-4">
-                  {playlist.title}
+                  {playlist.name || playlist.title}
                 </h1>
-                <div className="flex justify-center sm:justify-start items-center space-x-2 sm:space-x-4">
+                {/* <div className="flex justify-center sm:justify-start items-center space-x-2 sm:space-x-4">
                   <Button
                     variant="outline"
                     size="icon"
@@ -65,13 +66,17 @@ const Page = async ({
                   >
                     <HeartIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Button>
-                </div>
+                </div> */}
               </div>
             </div>
           </CardHeader>
           <CardContent className="p-2 sm:p-6">
             {songs && songs.length > 0 ? (
-              <PlaylistSongs songs={songs} />
+              <PlaylistSongs
+                songs={songs}
+                isPublic={isPublic}
+                playlist={playlist}
+              />
             ) : (
               <div className="text-center py-10 text-gray-500">
                 No songs in this playlist

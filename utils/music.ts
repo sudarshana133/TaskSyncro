@@ -144,7 +144,7 @@ export const addSongToPlaylist = async (playlistId: string, songId: string, titl
             id: songId,
             musicPlaylist: playlistId
         }
-        await database.createDocument(database_id, songCollectionId, ID.unique(), documentData);
+        await database.createDocument(database_id, songCollectionId, songId, documentData);
     } catch (error: any) {
         throw new Error("Error", error.message);
     }

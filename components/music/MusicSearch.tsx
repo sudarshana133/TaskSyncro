@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import useDebounce from "@/context/useDebounce";
+import useDebounce from "@/hooks/useDebounce";
 import { useMusic } from "@/context/MusicContext";
 import { Search, X, History } from "lucide-react";
 import { Input } from "../ui/input";

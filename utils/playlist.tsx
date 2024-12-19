@@ -31,7 +31,7 @@ export const getPlaylistSongs = async (playlistId: string): Promise<Song[]> => {
       SONGSFROMAPI.map(async (song) => {
         try {
           const fetchedSong = await getSongFromApi(song.id);
-          return Array.isArray(fetchedSong) ? fetchedSong[0] : fetchedSong; // Handle extra wrapper
+          return Array.isArray(fetchedSong) ? fetchedSong[0] : fetchedSong;
         } catch (error: any) {
           console.error(
             `Error fetching song with ID ${song.id}:`,

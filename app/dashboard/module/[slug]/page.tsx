@@ -16,6 +16,18 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
       <div>
         <h1>No module resources</h1>
         <p>Contact admin {user?.email}</p>
+        {moduleData?.creator === user?.name ? (
+          <Button asChild>
+            <Link
+              href={`/dashboard/module/${slug}/edit`}
+              className="absolute top-2 right-4"
+            >
+              Edit <Pencil />
+            </Link>
+          </Button>
+        ) : (
+          <p></p>
+        )}
       </div>
     );
   }

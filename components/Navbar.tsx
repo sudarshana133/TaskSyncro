@@ -90,7 +90,7 @@ const Navbar = ({ user }: { user: User }) => {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-2">
             <Button variant="default" onClick={handlePlaylistClick}>
-              Create Playlist
+              Music
             </Button>
             <Button
               variant="secondary"
@@ -120,7 +120,7 @@ const Navbar = ({ user }: { user: User }) => {
                   variant="default"
                   onClick={handlePlaylistClick}
                 >
-                  Create Playlist
+                  Music
                 </Button>
                 <Button
                   variant="secondary"

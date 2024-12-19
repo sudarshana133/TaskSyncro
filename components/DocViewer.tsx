@@ -120,7 +120,7 @@ const DocViewer = ({ fileId }: { fileId: string }) => {
           </Document>
         </div>
       ) : (
-        <div className="flex items-center justify-center h-64">
+        <div className="flex items-center justify-center h-64 mx-auto">
           <p className="text-gray-500 text-lg animate-pulse">Loading PDF...</p>
         </div>
       )}

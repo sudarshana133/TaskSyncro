@@ -1,5 +1,7 @@
 "use client";
+
 import { useMusic } from "@/context/MusicContext";
+import { usePlaylist } from "@/context/PlaylistContext";
 import { useState, useRef, useEffect } from "react";
 import {
   Play,
@@ -7,20 +9,24 @@ import {
   ChevronUp,
   ChevronDown,
   Volume2,
-  PlusCircle,
+  VolumeX,
+  SkipBack,
+  SkipForward,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { AddToPlaylist } from "./AddToPlaylist";
 
 const MusicPlayer = ({ user }: { user: User }) => {
   const { song } = useMusic();
+  const { playlist, currentSongIndex, playNextSong, playPreviousSong } = usePlaylist();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isPlaylist, setIsPlaylist] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
 
   useEffect(() => {
     if (song && audioRef.current) {
@@ -58,8 +64,31 @@ const MusicPlayer = ({ user }: { user: User }) => {
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
+    setIsMuted(newVolume === 0);
     if (audioRef.current) {
       audioRef.current.volume = newVolume;
+    }
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      setIsMuted(!isMuted);
+      audioRef.current.volume = isMuted ? volume : 0;
+    }
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newTime = parseFloat(e.target.value);
+    if (audioRef.current) {
+      audioRef.current.currentTime = newTime;
+    }
+    setCurrentTime(newTime);
+  };
+
+  const updateTime = () => {
+    if (audioRef.current) {
+      setCurrentTime(audioRef.current.currentTime);
+      setDuration(audioRef.current.duration);
     }
   };
 
@@ -76,8 +105,8 @@ const MusicPlayer = ({ user }: { user: User }) => {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-4 bg-white text-black border border-gray-300 rounded-full shadow-lg z-[999] transition-all duration-300",
-        isCollapsed ? "w-16 h-16" : "w-72 h-auto rounded-lg"
+        "fixed bottom-[4rem] md:bottom-4 left-4 bg-white text-black border border-gray-300 rounded-full shadow-lg transition-all duration-300",
+        isCollapsed ? "w-16 h-16" : "w-80 h-auto rounded-lg"
       )}
     >
       {isCollapsed ? (
@@ -118,19 +147,13 @@ const MusicPlayer = ({ user }: { user: User }) => {
             />
             <div className="flex-1 overflow-hidden flex gap-2 items-center">
               <div className="flex flex-col">
-                <p className="text-sm font-medium truncate max-w-[5.25rem] text-gray-800">
+                <p className="text-sm font-medium truncate max-w-[8rem] text-gray-800">
                   {song.name}
                 </p>
-                <p className="text-xs text-gray-500 truncate max-w-[5.25rem]">
+                <p className="text-xs text-gray-500 truncate max-w-[8rem]">
                   {artistName}
                 </p>
               </div>
-              <Button
-                className="rounded-full bg-blue-100 hover:bg-blue-200 text-blue-600 w-8 h-8"
-                onClick={() => setIsPlaylist(true)}
-              >
-                <PlusCircle />
-              </Button>
             </div>
             <button
               onClick={toggleCollapse}
@@ -141,7 +164,10 @@ const MusicPlayer = ({ user }: { user: User }) => {
             </button>
           </div>
 
-          <div className="flex items-center space-x-4 mb-2">
+          <div className="flex items-center justify-between mb-2">
+            <button onClick={playPreviousSong} aria-label="Previous Song">
+              <SkipBack size={20} className="text-gray-600 hover:text-blue-500" />
+            </button>
             <button
               onClick={togglePlayPause}
               className="bg-blue-500 p-2 rounded-full hover:bg-blue-600 text-white transition-colors"
@@ -149,33 +175,62 @@ const MusicPlayer = ({ user }: { user: User }) => {
             >
               {isPlaying ? <Pause size={20} /> : <Play size={20} />}
             </button>
+            <button onClick={playNextSong} aria-label="Next Song">
+              <SkipForward size={20} className="text-gray-600 hover:text-blue-500" />
+            </button>
+          </div>
 
-            <div className="flex-1 flex items-center space-x-2">
-              <Volume2 size={16} className="text-gray-500" />
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={volume}
-                onChange={handleVolumeChange}
-                className="flex-1 h-1 bg-gray-300 rounded-full appearance-none cursor-pointer"
-                aria-label="Volume"
-              />
-            </div>
+          <div className="flex items-center space-x-2">
+            <Volume2 size={16} className="text-gray-500" />
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              className="flex-1 h-1 bg-gray-300 rounded-full appearance-none cursor-pointer"
+              aria-label="Volume"
+            />
+            <button onClick={toggleMute} aria-label="Mute">
+              {isMuted ? (
+                <VolumeX size={16} className="text-gray-600 hover:text-blue-500" />
+              ) : (
+                <Volume2 size={16} className="text-gray-600 hover:text-blue-500" />
+              )}
+            </button>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <span className="text-xs text-gray-500">
+              {isNaN(currentTime) || !currentTime
+                ? "00:00"
+                : new Date(currentTime * 1000).toISOString().substr(14, 5)}
+            </span>
+            <input
+              type="range"
+              min="0"
+              max={isNaN(duration) || !duration ? 0 : duration}
+              step="0.01"
+              value={currentTime}
+              onChange={handleSeek}
+              className="flex-1 mx-2 h-1 bg-gray-300 rounded-full appearance-none cursor-pointer"
+              aria-label="Seek"
+            />
+            <span className="text-xs text-gray-500">
+              {isNaN(duration) || !duration
+                ? "00:00"
+                : new Date(duration * 1000).toISOString().substr(14, 5)}
+            </span>
           </div>
         </div>
       )}
-      {isPlaylist && (
-        <AddToPlaylist
-          onClose={() => setIsPlaylist(false)}
-          isOpen={isPlaylist}
-          user={user}
-          songId={song.id}
-          songTitle={song.name}
-        />
-      )}
-      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} loop />
+      <audio
+        ref={audioRef}
+        onTimeUpdate={updateTime}
+        onEnded={playNextSong}
+        loop={false}
+      />
     </div>
   );
 };
