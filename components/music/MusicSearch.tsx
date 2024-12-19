@@ -7,6 +7,7 @@ import { useMusic } from "@/context/MusicContext";
 import { Search, X, History } from "lucide-react";
 import { Input } from "../ui/input";
 import Image from "next/image";
+import { usePlaylist } from "@/context/PlaylistContext";
 
 const MusicSearch = ({
   maxRes,
@@ -20,6 +21,7 @@ const MusicSearch = ({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [history, setHistory] = useState<Song[]>([]);
   const debouncedSongName = useDebounce(songName, 500);
+  const { setPlaylist } = usePlaylist();
 
   const { setSong } = useMusic();
 
@@ -52,6 +54,7 @@ const MusicSearch = ({
 
   const handleSongClick = (song: Song) => {
     // Set the clicked song as currently playing
+    setPlaylist(null);
     setSong(song);
 
     // Update song history

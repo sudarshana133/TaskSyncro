@@ -3,8 +3,8 @@
 import React, { createContext, useContext, useState } from "react";
 
 interface MusicContextType {
-  song: Song | undefined; // The song can be undefined if no song is selected
-  setSong: React.Dispatch<React.SetStateAction<Song | undefined>>; // Set the song or undefined
+  song: Song | null; // The song can be undefined if no song is selected
+  setSong: React.Dispatch<React.SetStateAction<Song | null>>; // Set the song or undefined
 }
 
 const MusicContext = createContext<MusicContextType | undefined>(undefined);
@@ -12,7 +12,7 @@ const MusicContext = createContext<MusicContextType | undefined>(undefined);
 export const MusicProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [song, setSong] = useState<Song | undefined>(undefined);
+  const [song, setSong] = useState<Song | null>(null);
 
   return (
     <MusicContext.Provider value={{ song, setSong }}>

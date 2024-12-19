@@ -12,14 +12,17 @@ import {
   VolumeX,
   SkipBack,
   SkipForward,
+  PlusCircle,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { Button } from "../ui/button";
+import { AddToPlaylist } from "./AddToPlaylist";
 
 const MusicPlayer = ({ user }: { user: User }) => {
-  const { song } = useMusic();
-  const { playlist, currentSongIndex, playNextSong, playPreviousSong } = usePlaylist();
+  const { song, setSong } = useMusic();
+  const { playNextSong, playPreviousSong, playlist, setPlaylist } =
+    usePlaylist();
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -27,6 +30,7 @@ const MusicPlayer = ({ user }: { user: User }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (song && audioRef.current) {
@@ -137,13 +141,13 @@ const MusicPlayer = ({ user }: { user: User }) => {
         </div>
       ) : (
         <div className="p-4">
-          <div className="flex items-center space-x-4 mb-4">
+          <div className="flex items-center space-x-4 mb-4 relative">
             <Image
               src={albumImage}
               alt="Album Art"
-              width={80}
-              height={80}
-              className="rounded-lg object-cover"
+              width={500}
+              height={500}
+              className="rounded-lg object-cover w-20 h-20"
             />
             <div className="flex-1 overflow-hidden flex gap-2 items-center">
               <div className="flex flex-col">
@@ -155,18 +159,40 @@ const MusicPlayer = ({ user }: { user: User }) => {
                 </p>
               </div>
             </div>
-            <button
-              onClick={toggleCollapse}
-              className="text-gray-500 hover:text-blue-600 transition-colors ml-1"
-              aria-label="Collapse player"
-            >
-              <ChevronDown size={20} />
-            </button>
+            <div className="flex items-center justify-end mt-4 gap-2">
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="text-blue-500 hover:text-blue-600 transition-colors"
+                aria-label="Add to Playlists"
+              >
+                <PlusCircle size={20} />
+              </button>
+              <button
+                onClick={toggleCollapse}
+                className="text-gray-500 hover:text-blue-600 transition-colors ml-1"
+                aria-label="Collapse player"
+              >
+                <ChevronDown size={20} />
+              </button>
+            </div>
+            <div className="absolute top-[-5px] right-[-3px]">
+              <button
+                onClick={() => {
+                  setSong(null);
+                  setPlaylist(null);
+                }}
+              >
+                <X />
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center justify-between mb-2">
             <button onClick={playPreviousSong} aria-label="Previous Song">
-              <SkipBack size={20} className="text-gray-600 hover:text-blue-500" />
+              <SkipBack
+                size={20}
+                className="text-gray-600 hover:text-blue-500"
+              />
             </button>
             <button
               onClick={togglePlayPause}
@@ -176,7 +202,10 @@ const MusicPlayer = ({ user }: { user: User }) => {
               {isPlaying ? <Pause size={20} /> : <Play size={20} />}
             </button>
             <button onClick={playNextSong} aria-label="Next Song">
-              <SkipForward size={20} className="text-gray-600 hover:text-blue-500" />
+              <SkipForward
+                size={20}
+                className="text-gray-600 hover:text-blue-500"
+              />
             </button>
           </div>
 
@@ -194,9 +223,15 @@ const MusicPlayer = ({ user }: { user: User }) => {
             />
             <button onClick={toggleMute} aria-label="Mute">
               {isMuted ? (
-                <VolumeX size={16} className="text-gray-600 hover:text-blue-500" />
+                <VolumeX
+                  size={16}
+                  className="text-gray-600 hover:text-blue-500"
+                />
               ) : (
-                <Volume2 size={16} className="text-gray-600 hover:text-blue-500" />
+                <Volume2
+                  size={16}
+                  className="text-gray-600 hover:text-blue-500"
+                />
               )}
             </button>
           </div>
@@ -228,9 +263,24 @@ const MusicPlayer = ({ user }: { user: User }) => {
       <audio
         ref={audioRef}
         onTimeUpdate={updateTime}
-        onEnded={playNextSong}
+        onEnded={() => {
+          if (playlist === null) {
+            audioRef.current?.play();
+          } else {
+            playNextSong();
+          }
+        }}
         loop={false}
       />
+      {isModalOpen && (
+        <AddToPlaylist
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          user={user}
+          songId={song.id}
+          songTitle={song.name}
+        />
+      )}
     </div>
   );
 };
