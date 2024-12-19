@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from "react";
+import { useMusic } from "./MusicContext";
 
 interface PlaylistContextType {
   playlist: Playlist | null;
@@ -14,31 +15,35 @@ interface PlaylistContextType {
 
 const PlaylistContext = createContext<PlaylistContextType | null>(null);
 
-export const PlaylistProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PlaylistProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null);
-
+  const { setSong } = useMusic();
   const playNextSong = useCallback(() => {
-    if (playlist && currentSongIndex !== null && playlist.songs.length > 0) {
+    if (playlist && currentSongIndex !== null) {
       const nextIndex = (currentSongIndex + 1) % playlist.songs.length;
       setCurrentSongIndex(nextIndex);
-      return playlist.songs[nextIndex]; // Return the next song
+      const findSong = playlist.songs[nextIndex];
+      setSong(findSong);
     }
-    return null;
   }, [playlist, currentSongIndex]);
 
   const playPreviousSong = useCallback(() => {
-    if (playlist && currentSongIndex !== null && playlist.songs.length > 0) {
-      const previousIndex = (currentSongIndex - 1 + playlist.songs.length) % playlist.songs.length;
+    if (playlist && currentSongIndex !== null) {
+      const previousIndex =
+        (currentSongIndex - 1 + playlist.songs.length) % playlist.songs.length;
       setCurrentSongIndex(previousIndex);
-      return playlist.songs[previousIndex]; // Return the previous song
+      const findSong = playlist.songs[previousIndex];
+      setSong(findSong);
     }
-    return null;
   }, [playlist, currentSongIndex]);
 
-  const currentSong = playlist && currentSongIndex !== null 
-    ? playlist.songs[currentSongIndex] 
-    : null;
+  const currentSong =
+    playlist && currentSongIndex !== null
+      ? playlist.songs[currentSongIndex]
+      : null;
 
   return (
     <PlaylistContext.Provider
