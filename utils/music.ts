@@ -20,6 +20,7 @@ export const getPlaylists = async (name: string): Promise<Playlist[]> => {
                 $id: doc.$id,
                 title: doc.title,
                 songs: doc.songs,
+                private: doc.private,
             };
         });
         return playlists;
@@ -35,8 +36,8 @@ export const createPlaylist = async (title: string, userId: string, userName: st
         const documentData = {
             title,
             songs: [],
-            user: userId,
-            creator: userName
+            creator: userName,
+            private: true,
         }
         await database.createDocument(database_id, musicCollectionId, ID.unique(), documentData);
     } catch (error: any) {
@@ -65,26 +66,6 @@ export const editPlaylist = async (id: string, title: string) => {
         throw new Error(error.message)
     }
 }
-export const getUserPlaylist = async (creator: string): Promise<Playlist[]> => {
-    try {
-        if (!creator) {
-            throw new Error("Creator name not provided");
-        }
-        const data = await database.listDocuments(database_id, musicCollectionId, [
-            Query.equal("creator", creator)
-        ])
-        const playlists: Playlist[] = data.documents.map((doc) => {
-            return {
-                $id: doc.$id,
-                songs: doc.songs,
-                title: doc.title,
-            }
-        });
-        return playlists;
-    } catch (error: any) {
-        throw new Error("Error" + error.message);
-    }
-}
 export const getPlaylistByTitle = async (
     creator: string,
     title: string
@@ -108,6 +89,7 @@ export const getPlaylistByTitle = async (
                 $id: doc.$id,
                 songs: doc.songs || [],
                 title: doc.title || "Untitled",
+                private: doc.private,
             }));
 
         return playlists;

@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import {
   addToPlaylists,
   getPlaylistByTitle,
-  getUserPlaylist,
+  getPlaylists,
 } from "@/utils/music";
 import { useRouter } from "next/navigation";
 import useDebounce from "@/hooks/useDebounce";
@@ -43,7 +43,7 @@ export function AddToPlaylist({
 
   const searchUserPlaylist = async () => {
     try {
-      const playlists = await getUserPlaylist(user.name);
+      const playlists = await getPlaylists(user.name);
       if (playlists.length > 5) {
         setPlaylists(playlists.slice(0, 4));
         return;
@@ -106,7 +106,7 @@ export function AddToPlaylist({
       await addToPlaylists(selectedPlaylists, songId, songTitle);
       toast({
         title: "Success!",
-        description: "Successfully saved songs to playlits",
+        description: "Successfully saved songs to playlists",
         className: "bg-green-500",
       });
       router.refresh();

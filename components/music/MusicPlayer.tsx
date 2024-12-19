@@ -109,7 +109,7 @@ const MusicPlayer = ({ user }: { user: User }) => {
   return (
     <div
       className={cn(
-        "fixed bottom-[4rem] md:bottom-4 left-4 bg-white text-black border border-gray-300 rounded-full shadow-lg transition-all duration-300",
+        "fixed bottom-[4rem] md:bottom-4 left-4 bg-white text-black border border-gray-300 rounded-full shadow-lg transition-all duration-300 z-[49]",
         isCollapsed ? "w-16 h-16" : "w-80 h-auto rounded-lg"
       )}
     >

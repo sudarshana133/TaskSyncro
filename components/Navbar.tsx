@@ -113,6 +113,9 @@ const Navbar = ({ user }: { user: User }) => {
         {isMenuOpen && (
           <div className="absolute top-full left-0 right-0 bg-blue-500 md:hidden z-50">
             <div className="p-4">
+              <div className="mb-2 w-full">
+                <MusicSearch maxRes={5} isHideOn />
+              </div>
               {/* Mobile Action Buttons */}
               <div className="space-y-2">
                 <Button

@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import { useMusic } from "./MusicContext";
+import { getSongFromApi } from "@/utils/song";
 
 interface PlaylistContextType {
   playlist: Playlist | null;
@@ -21,10 +22,29 @@ export const PlaylistProvider: React.FC<{ children: React.ReactNode }> = ({
   const [playlist, setPlaylist] = useState<Playlist | null>(null);
   const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null);
   const { setSong } = useMusic();
+
+  const findSongFromId = async (index: number) => {
+    try {
+      const songId = playlist?.songs[index].id;
+      if (!songId) {
+        setSong(null);
+        return;
+      }
+      const song: any = await getSongFromApi(songId);
+      setSong(song[0]);
+    } catch (error) {
+      console.log("Error finding song from ID:", error);
+      setSong(null);
+    }
+  };
   const playNextSong = useCallback(() => {
     if (playlist && currentSongIndex !== null) {
       const nextIndex = (currentSongIndex + 1) % playlist.songs.length;
       setCurrentSongIndex(nextIndex);
+      if (playlist.private) {
+        findSongFromId(nextIndex);
+        return;
+      }
       const findSong = playlist.songs[nextIndex];
       setSong(findSong);
     }
@@ -35,6 +55,10 @@ export const PlaylistProvider: React.FC<{ children: React.ReactNode }> = ({
       const previousIndex =
         (currentSongIndex - 1 + playlist.songs.length) % playlist.songs.length;
       setCurrentSongIndex(previousIndex);
+      if (playlist.private) {
+        findSongFromId(previousIndex);
+        return;
+      }
       const findSong = playlist.songs[previousIndex];
       setSong(findSong);
     }

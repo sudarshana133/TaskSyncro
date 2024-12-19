@@ -50,7 +50,8 @@ declare global {
     type Playlist = {
         $id: string;
         title: string;
-        songs: Song[] | []
+        songs: Song[] | [];
+        private: boolean;
     }
 }
 export { };
