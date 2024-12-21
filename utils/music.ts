@@ -59,11 +59,10 @@ export const editPlaylist = async (id: string, title: string) => {
         if (!id || !title) {
             throw new Error("Some details are missing");
         }
-        await database.updateDocument(database_id, musicCollectionId, id, {
-            title
-        });
+        await database.updateDocument(database_id, musicCollectionId, id, { title });
     } catch (error: any) {
-        throw new Error(error.message)
+        console.error("Error updating playlist:", error.message);
+        throw new Error(error.message);
     }
 }
 export const getPlaylistByTitle = async (

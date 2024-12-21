@@ -1,10 +1,14 @@
 "use client";
-import axios from "axios";
-import { FolderOpen, Loader2 } from "lucide-react";
-import { useState, useEffect } from "react";
 
-const Recommendation = ({user}:{user:User}) => {
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { FolderOpen, Loader2 } from "lucide-react";
+import ModuleCard from "./ModuleCard";
+
+const Recommendation = ({ user }: { user: User }) => {
   const [recommendation, setRecommendation] = useState<Module[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchRecommendation = async () => {
       if (user) {
@@ -12,10 +16,13 @@ const Recommendation = ({user}:{user:User}) => {
           const res = await axios.post("/api/recommendation", {
             username: user?.name,
           });
-          console.log(res.data);
-          setRecommendation(res.data);
+          if (res.data?.recommendations) {
+            setRecommendation(res.data.recommendations);
+          }
         } catch (error) {
-          console.log("Error fetching recommendation:", error);
+          console.error("Error fetching recommendations:", error);
+        } finally {
+          setLoading(false);
         }
       }
     };
@@ -29,34 +36,24 @@ const Recommendation = ({user}:{user:User}) => {
 
   return (
     <div className="bg-white shadow-md rounded-xl p-6 border border-gray-100">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-3">
-        Recommendations
-      </h2>
+      <div className="flex items-center mb-6 pb-3 border-b">
+        <FolderOpen className="mr-4 text-blue-500" size={32} />
+        <h1 className="text-2xl font-bold text-gray-800">Recommendations</h1>
+      </div>
 
-      {recommendation ? (
-        recommendation.length > 0 ? (
-          <div className="space-y-4">
-            {recommendation.map((rec) => (
-              <div
-                key={rec.$id}
-                className="bg-gray-50 p-4 rounded-lg border border-gray-200 
-                           hover:bg-gray-100 transition duration-300 
-                           transform hover:-translate-y-1 hover:scale-[1.02]"
-              >
-                <p className="text-gray-700">{rec.description}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center text-gray-500 py-8">
-            <FolderOpen className="mx-auto mb-4 text-gray-300" size={48} />
-            <p className="text-xl">No recommendations available</p>
-          </div>
-        )
-      ) : (
+      {loading ? (
         <div className="flex justify-center items-center py-8">
           <Loader2 className="animate-spin text-blue-500" size={36} />
           <span className="ml-3 text-gray-600">Loading...</span>
+        </div>
+      ) : recommendation.length > 0 ? (
+        <ModuleCard modules={recommendation} />
+      ) : (
+        <div className="text-center bg-gray-50 border border-gray-200 rounded-lg p-12">
+          <FolderOpen className="mx-auto mb-4 text-gray-300" size={64} />
+          <h2 className="text-2xl text-gray-600 mb-2">
+            No recommendations found
+          </h2>
         </div>
       )}
     </div>

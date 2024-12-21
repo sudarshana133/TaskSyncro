@@ -42,7 +42,7 @@ const SignupPage = () => {
         <form className="space-y-4" onSubmit={(e) => handleRegister(e)}>
           <Input
             type="text"
-            placeholder="Username"
+            placeholder="Name"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full"

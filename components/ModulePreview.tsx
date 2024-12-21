@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, Trash } from "lucide-react";
+import { FileText, Play, Trash } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   deleteModuleResource,
@@ -75,13 +75,9 @@ const ModulePreview = ({
                 onClick={() => handleResourceClick(resource)}
               >
                 {resource.type === "youtube" ? (
-                  <img
-                    src="https://i.ytimg.com/vi/UrsmFxEIp5k/hq720.jpg?sqp=-oaymwEnCNAFEJQDSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLBm9X2Vozsbpfw8ihb1mR7DCytnWQ"
-                    alt="YouTube Video Thumbnail"
-                    width={120}
-                    height={80}
-                    className="rounded-md object-cover"
-                  />
+                  <div className="flex items-center justify-center w-[120px] h-[80px] bg-gray-100 rounded-md">
+                    <Play className="w-8 h-8 text-red-500" />
+                  </div>
                 ) : (
                   <div className="flex items-center justify-center w-[120px] h-[80px] bg-gray-100 rounded-md">
                     <FileText className="w-8 h-8 text-gray-500" />
@@ -106,7 +102,9 @@ const ModulePreview = ({
                       onClick={() => {
                         handleDelete(
                           resource.$id,
-                          resource.type === "document" ? resource.url : undefined
+                          resource.type === "document"
+                            ? resource.url
+                            : undefined
                         );
                       }}
                     >

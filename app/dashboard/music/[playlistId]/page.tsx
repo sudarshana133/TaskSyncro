@@ -27,9 +27,14 @@ const Page = async ({
     songs = playlist.songs;
     isPublic = true;
   } else {
-    playlist = await getPlaylistById(playlistId);
-    songs = await getPlaylistSongs(playlistId);
+    try {
+      playlist = await getPlaylistById(playlistId);
+      songs = await getPlaylistSongs(playlistId);
+    } catch (error: any) {
+      return <div>{"Some error in loading the playlist"}</div>;
+    }
   }
+
   return (
     <div className="bg-white min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">

@@ -21,17 +21,17 @@ const PlaylistSongs = ({
   playlist: Playlist;
 }) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="w-full overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[50px] sm:w-[100px]">#</TableHead>
+            <TableHead className="w-12"></TableHead>
             <TableHead>Title</TableHead>
-            <TableHead className="hidden sm:table-cell">Artist</TableHead>
-            <TableHead className="hidden sm:table-cell text-right">
+            <TableHead className="hidden md:table-cell">Artist</TableHead>
+            <TableHead className="hidden md:table-cell text-right">
               Duration
             </TableHead>
-            {!isPublic && <TableHead className="text-right">Actions</TableHead>}
+            {!isPublic && <TableHead className="w-12"></TableHead>}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -44,47 +44,47 @@ const PlaylistSongs = ({
             return (
               <TableRow
                 key={index}
-                className="group hover:bg-gray-100 transition-colors duration-200"
+                className="group hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
               >
-                <TableCell className="w-12 text-right font-medium text-gray-500">
-                  <div className="flex justify-center items-center">
-                    <span className="group-hover:hidden">{index + 1}</span>
+                <TableCell className="w-12 p-0 text-center">
+                  <div className="flex justify-center items-center h-full">
                     <MusicPlayInPlaylist song={song} playlist={playlist} />
                   </div>
                 </TableCell>
 
-                <TableCell className="flex items-center space-x-2 sm:space-x-4">
-                  <Image
-                    src={albumImage}
-                    alt={song.name}
-                    width={1000}
-                    height={1000}
-                    className="rounded-md w-20 h-20 sm:w-12 sm:h-12 object-cover"
-                  />
-                  <div>
-                    <div className="font-medium text-sm sm:text-base truncate max-w-[150px] sm:max-w-none text-gray-900">
-                      {song.name.replace(/&quot;/g, '"')}
-                    </div>
-                    <div className="text-xs text-gray-500 sm:hidden truncate max-w-[120px]">
-                      {artistName}
+                <TableCell>
+                  <div className="flex items-center space-x-3">
+                    <Image
+                      src={albumImage}
+                      alt={song.name}
+                      width={40}
+                      height={40}
+                      className="rounded-md w-10 h-10 object-cover flex-shrink-0"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="font-medium text-sm truncate">
+                        {song.name.replace(/&quot;/g, '"')}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 truncate md:hidden">
+                        {artistName}
+                      </div>
                     </div>
                   </div>
                 </TableCell>
 
-                {/* Artist Name (Visible on Larger Screens) */}
-                <TableCell className="hidden sm:table-cell text-gray-600">
+                <TableCell className="hidden md:table-cell text-gray-600 dark:text-gray-300">
                   {artistName}
                 </TableCell>
 
-                {/* Duration (Visible on Larger Screens) */}
-                <TableCell className="hidden sm:table-cell text-right text-gray-600">
+                <TableCell className="hidden md:table-cell text-right text-gray-600 dark:text-gray-300">
                   {convertToTime(song.duration)}
                 </TableCell>
 
-                {/* More Options Button */}
                 {!isPublic && (
-                  <TableCell className="hidden sm:table-cell text-right text-gray-600">
-                    <SongActions song={song} />
+                  <TableCell className="w-12 p-0">
+                    <div className="flex justify-center">
+                      <SongActions song={song} />
+                    </div>
                   </TableCell>
                 )}
               </TableRow>
@@ -95,4 +95,5 @@ const PlaylistSongs = ({
     </div>
   );
 };
+
 export default PlaylistSongs;

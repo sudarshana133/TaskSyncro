@@ -1,5 +1,6 @@
 import ModulePreview from "@/components/ModulePreview";
 import { LoadingState, ResourceRenderer } from "@/components/ResourceRenderer";
+import Timer from "@/components/Timer";
 import { Button } from "@/components/ui/button";
 import { getLoggedInUser } from "@/lib/appwrite";
 import { getModule } from "@/utils/module-util";
@@ -11,6 +12,13 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const slug = (await params).slug;
   const user = await getLoggedInUser();
   const moduleData: Module | null = await getModule(slug);
+  if (!user) {
+    return (
+      <div>
+        <h1>Ooops looks like you are not logged in</h1>
+      </div>
+    );
+  }
   if (!moduleData || !moduleData?.modules) {
     return (
       <div>
@@ -53,6 +61,9 @@ const Page = async ({ params }: { params: Promise<{ slug: string }> }) => {
             isEdit={false}
           />
         </div>
+      </div>
+      <div className="absolute top-2">
+        <Timer user={user} />
       </div>
       {moduleData?.creator === user?.name ? (
         <Button asChild>

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import Image from "next/image";
 import { ArrowRight, Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -53,7 +53,7 @@ const Navbar = ({ user }: { user: User }) => {
   }
 
   return (
-    <div className="bg-blue-500 text-white">
+    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
       <div className="flex justify-between items-center p-4 relative">
         {/* Logo Section */}
         <Link href="/dashboard" className="flex items-center space-x-3">
@@ -81,7 +81,7 @@ const Navbar = ({ user }: { user: User }) => {
             <Button
               onClick={toggleMenu}
               variant="ghost"
-              className="p-2 text-white hover:bg-blue-600"
+              className="p-2 text-white hover:bg-white/10"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </Button>
@@ -89,9 +89,12 @@ const Navbar = ({ user }: { user: User }) => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-2">
-            <Button variant="default" onClick={handlePlaylistClick}>
+            <Link
+              href={"/dashboard/music"}
+              className={buttonVariants({ variant: "default" })}
+            >
               Music
-            </Button>
+            </Link>
             <Button
               variant="secondary"
               onClick={handleCreateModule}
@@ -111,9 +114,9 @@ const Navbar = ({ user }: { user: User }) => {
 
         {/* Mobile Dropdown Menu */}
         {isMenuOpen && (
-          <div className="absolute top-full left-0 right-0 bg-blue-500 md:hidden z-50">
+          <div className="absolute top-full left-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 md:hidden z-50">
             <div className="p-4">
-              <div className="mb-2 w-full">
+              <div className="mb-2">
                 <MusicSearch maxRes={5} isHideOn />
               </div>
               {/* Mobile Action Buttons */}

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
             email,
             createdAt: new Date()
         }
-        await database.createDocument(database_id, userCollectionId,ID.unique(),docData);
+        await database.createDocument(database_id, userCollectionId,user.$id,docData);
         // Set session cookie
         response.cookies.set("session", session.secret, {
             httpOnly: true,
