@@ -1,3 +1,7 @@
+Here is the correct `README.md` content that you can copy and use for your TaskSyncro project:
+
+---
+
 # TaskSyncro
 
 TaskSyncro is a personalized micro-learning platform designed to help users engage with and learn through interactive, bite-sized lessons and resources. It supports dynamic content loading, user authentication, and recommendations powered by the Gemini API. TaskSyncro is built using React, Next.js, and Appwrite, with the goal of providing a streamlined experience for users looking to engage in personalized learning.
@@ -18,7 +22,8 @@ TaskSyncro is a personalized micro-learning platform designed to help users enga
 - **Containerization**: Docker
 - **Music Integration**: JioSaavn API (free tier)
 - **Recommendation System**: Gemini API (free)
-  **Senty**: Sentry (free tier)
+- **Sentry**: Sentry (free tier)
+
 ## Project Structure
 
 ```bash
@@ -37,3 +42,77 @@ TaskSyncro is a personalized micro-learning platform designed to help users enga
 ├── docker-compose.yml     # Docker configuration for development and production
 ├── next.config.js         # Next.js configuration
 └── package.json           # Project dependencies and scripts
+```
+
+## Setup
+
+### 1. Clone the Repository
+
+Start by cloning the repository to your local machine:
+
+```bash
+git clone https://github.com/your-username/TaskSyncro.git
+cd TaskSyncro
+```
+
+### 2. Install Dependencies
+
+Install the project dependencies using npm:
+
+```bash
+npm install
+```
+
+### 3. Configuration
+
+To set up the project locally, you will need to configure your environment variables. These variables are required to connect the app to Appwrite and other services.
+
+#### 3.1 Create the `.env.local` file
+
+Copy the contents of the `.env.example` file and rename it to `.env.local`:
+
+```bash
+cp .env.example .env.local
+```
+
+#### 3.2 Set Your Environment Variables
+
+Update the `.env.local` file with your actual credentials. You will need the following information:
+
+- **Appwrite URL**: Your Appwrite instance URL
+- **Appwrite Project ID**: The project ID for your Appwrite project
+- **Database ID**: The ID of the Appwrite database you're using
+- **Appwrite API Key**: A server API key for accessing Appwrite
+- **Collection IDs**: IDs for your Appwrite collections (User, Module, Module Resources, Music Playlist, Songs)
+- **Bucket ID**: The ID for storing media (if applicable)
+- **Gemini Key**: Your Gemini API key for recommendations
+
+Here is an example of the `.env.local` file:
+
+```bash
+NEXT_PUBLIC_APPWRITE_URL=<your_appwrite_url>
+NEXT_PUBLIC_APPWRITE_PROJECT_ID=<your_appwrite_project_id>
+NEXT_PUBLIC_DATABASE_ID=<your_database_id>
+NEXT_PUBLIC_APPWRITE_SERVER_API_KEY=<your_appwrite_server_api_key>
+NEXT_PUBLIC_USER_COLLECTION_ID=675338d90030e8b6b5a2
+NEXT_PUBLIC_MODULE_COLLECTION_ID=675339eb002d49f65ba8
+NEXT_PUBLIC_MODULE_RESOURCES_COLLECTION_ID=6757221400156b2646ed
+NEXT_PUBLIC_MUSIC_PLAYLIST_COLLECTION_ID=675f3c7000165cfc2d26
+NEXT_PUBLIC_SONGS_COLLECTION_ID=675f3d2b003691efb3d5
+NEXT_PUBLIC_BUCKET_ID=<your_bucket_id>
+NEXT_PUBLIC_GEMINI_KEY=<your_gemini_key>
+```
+
+### 4. Run the Development Server
+
+Once you have configured your `.env.local` file, you can run the development server:
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to view the project.
+
+---
+
+This version removes the contribution section as you requested. Let me know if you need any further adjustments!
