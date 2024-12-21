@@ -1,17 +1,31 @@
+// middleware.ts
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const session = request.cookies.get("session");
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
 
   // If user is logged in
   if (session) {
-    // Redirect logged-in users away from auth pages
+    // Check if there's a redirect parameter and handle it
     if (pathname === "/login" || pathname === "/signup") {
+      const redirectTo = request.nextUrl.searchParams.get("redirect");
+      if (redirectTo) {
+        // Ensure the redirect URL is within your domain
+        try {
+          const decodedRedirect = decodeURIComponent(redirectTo);
+          // Only redirect to internal paths (starting with /)
+          if (decodedRedirect.startsWith('/')) {
+            return NextResponse.redirect(new URL(decodedRedirect, request.url));
+          }
+        } catch (e) {
+          console.error("Invalid redirect URL");
+        }
+      }
+      // Default redirect if no valid redirect parameter
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
-    // Allow access to all other routes for logged-in users
     return NextResponse.next();
   }
 
@@ -20,8 +34,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Redirect unauthenticated users to login
-  return NextResponse.redirect(new URL("/login", request.url));
+  // Create the redirect URL with the current path encoded
+  const encodedRedirect = encodeURIComponent(pathname + search);
+  const loginUrl = new URL(`/login?redirect=${encodedRedirect}`, request.url);
+
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {

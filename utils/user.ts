@@ -1,6 +1,7 @@
 import { database_id, userCollectionId } from "@/constants/environment";
-import { database } from "@/lib/appwrite-server";
+import { account, database } from "@/lib/appwrite-server";
 import { calculatePoints } from "@/lib/calculate-points";
+import { Query } from "node-appwrite";
 
 export const updatePoints = async (time: number, id: string) => {
     try {

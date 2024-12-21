@@ -1,17 +1,21 @@
-import Hero from "@/components/Hero"
+import Hero from "@/components/sections/Hero";
+import Features from "@/components/sections/Features";
+import SocialProof from "@/components/sections/SocialProof";
+import Footer from "@/components/sections/Footer";
+import Header from "@/components/Navbar1";
 
-const page = () => {
+export default function Home() {
   return (
-    <div>
-      {/* hero section  */}
-      <Hero/>
-      {/* features section */}
-      {/* demo section */}
-      {/* why choose tasksyncro */}
-      {/* testimonials or reviews */}
-      {/* sign up button */}
-      {/* footer */}
+    <div className="min-h-screen bg-background">
+      <Header />
+      <main>
+        <div className="mt-10">
+          <Hero />
+        </div>
+        <Features />
+        <SocialProof />
+      </main>
+      <Footer />
     </div>
-  )
+  );
 }
-export default page

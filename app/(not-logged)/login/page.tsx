@@ -1,71 +1,184 @@
 "use client";
-import { FormEvent, useState } from "react";
+
+import React, { Suspense, FormEvent, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import Loader from "@/components/loader";
+import { Loader2, Lock } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import axios from "axios";
+import { useRouter, useSearchParams } from "next/navigation";
+import axios, { AxiosError } from "axios";
 
-const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const LoginForm = () => {
+  const [formState, setFormState] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
   const { toast } = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
+
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      email: "",
+      password: "",
+    };
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formState.email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    if (!formState.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormState((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    if (errors[name as keyof typeof errors]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }));
+    }
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const res = await axios.post("/api/auth", {
-        email,
-        password,
+      const res = await axios.post("/api/auth", formState);
+      toast({
+        title: "Success!",
+        description: "Login successful. Redirecting...",
       });
+
+      if (redirectPath) {
+        try {
+          const decodedPath = decodeURIComponent(redirectPath);
+          if (decodedPath.startsWith("/")) {
+            router.push(decodedPath);
+            return;
+          }
+        } catch (e) {
+          console.error("Invalid redirect path");
+        }
+      }
+
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        "Invalid email or password. Please try again.";
+
       toast({
         title: "Error",
-        description: error.message || "Failed to log in. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
-      console.log("Login error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-gray-100 px-4 sm:px-8 md:px-0">
-      <div className="bg-blue-100 p-6 sm:p-8 rounded-2xl shadow-xl max-w-md w-full mt-4 sm:mt-20 mx-4 sm:mx-0">
-        <h1 className="text-2xl font-bold text-center mb-6">TaskSyncro</h1>
-        <form className="space-y-4" onSubmit={(e) => handleSubmit(e)}>
+    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="space-y-4">
+        <div>
           <Input
             type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full"
+            name="email"
+            placeholder="Email address"
+            value={formState.email}
+            onChange={handleInputChange}
+            className={`w-full ${errors.email ? "border-red-500" : ""}`}
+            disabled={isLoading}
             required
           />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+          )}
+        </div>
+
+        <div>
           <Input
             type="password"
+            name="password"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full"
+            value={formState.password}
+            onChange={handleInputChange}
+            className={`w-full ${errors.password ? "border-red-500" : ""}`}
+            disabled={isLoading}
             required
           />
-          <Button type="submit" className="w-full">
-            Login
-          </Button>
-          <p className="text-center mt-4">
-            Don{"'"}t have an account?{" "}
-            <Link href="/signup" className="text-blue-500">
-              Sign up
-            </Link>
-          </p>
-        </form>
+          {errors.password && (
+            <p className="mt-1 text-sm text-red-500">{errors.password}</p>
+          )}
+        </div>
       </div>
-    </div>
+      <Button
+        type="submit"
+        className="w-full flex justify-center items-center h-11"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Logging in...
+          </>
+        ) : (
+          "Log in"
+        )}
+      </Button>
+    </form>
   );
 };
+
+const LoginPage = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <div className="flex min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full space-y-8">
+          <div className="text-center">
+            <div className="mx-auto w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+              <Lock className="w-6 h-6 text-blue-600" />
+            </div>
+            <h1 className="mt-4 text-3xl font-bold text-gray-900">
+              TaskSyncro
+            </h1>
+            <p className="mt-2 text-sm text-gray-600">
+              Welcome back! Please sign in to continue
+            </p>
+          </div>
+          <LoginForm />
+        </div>
+      </div>
+    </div>
+  </Suspense>
+);
 
 export default LoginPage;

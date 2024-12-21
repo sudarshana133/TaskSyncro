@@ -1,104 +1,105 @@
 "use client";
-import Image from "next/image";
-import Link from "next/link";
+
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Menu, X } from "lucide-react"; // Import the Lucide icons
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import Image from "next/image";
 
-const Nav = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const navigation = [
+    { name: "Features", href: "#features" },
+    { name: "Testimonials", href: "#testimonials" },
+  ];
 
   return (
-    <nav className="bg-white text-gray-800 shadow-md">
-      <div className="container mx-auto px-4 py-2 flex justify-between items-center">
-        <Link
-          href="/"
-          className="flex items-center space-x-3 hover:cursor-pointer"
-        >
-          <Image
-            width={50}
-            height={50}
-            src="/favicon.jpg"
-            alt="TaskSyncro Logo"
-            className="rounded-lg shadow-md"
-          />
-          <h1 className="text-xl font-semibold text-gray-800">TaskSyncro</h1>
-        </Link>
+    <header className="fixed top-0 w-full bg-background/80 backdrop-blur-md z-50 border-b">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center">
+            <Image
+              width={50}
+              height={50}
+              alt="logo"
+              src="/favicon.jpg"
+              className="rounded-lg shadow-md w-10 sm:w-14"
+            />
+            <Link href="/" className="flex items-center space-x-2">
+              <div className="text-2xl font-bold bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+                TaskSyncro
+              </div>
+            </Link>
+          </div>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={toggleMobileMenu}
-          className="lg:hidden text-gray-800 focus:outline-none"
-        >
-          {isMobileMenuOpen ? (
-            <X className="h-6 w-6" />
-          ) : (
-            <Menu className="h-6 w-6" />
-          )}
-        </button>
+          {/* Desktop navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-8">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
+            <div className="flex items-center space-x-4">
+              <Link
+                href="/login"
+                className={buttonVariants({ variant: "default" })}
+              >
+                Log in
+              </Link>
+              <Link
+                href="/signup"
+                className={buttonVariants({ variant: "ghost" })}
+              >
+                Sign up
+              </Link>
+            </div>
+          </div>
 
-        {/* Desktop Navigation Links */}
-        <div className="hidden lg:flex space-x-6 mx-auto">
-          <Link href="/about" className="hover:text-blue-600">
-            About
-          </Link>
-          <Link href="/features" className="hover:text-blue-600">
-            Features
-          </Link>
-          <Link href="/pricing" className="hover:text-blue-600">
-            Pricing
-          </Link>
+          {/* Mobile menu button */}
+          <div className="flex md:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </Button>
+          </div>
         </div>
 
-        {/* Authentication Links */}
-        <div className="hidden lg:flex space-x-4">
-          <Link
-            href="/login"
-            className="px-4 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg shadow-sm hover:bg-primary/20 focus:outline-none focus:ring focus:ring-primary/30"
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg shadow-sm hover:bg-primary-dark focus:outline-none focus:ring focus:ring-primary/50"
-          >
-            Sign Up
-          </Link>
+        {/* Mobile menu */}
+        <div className={cn("md:hidden", isOpen ? "block" : "hidden")}>
+          <div className="space-y-1 pb-3 pt-2">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-primary transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                {item.name}
+              </Link>
+            ))}
+            <div className="mt-4 space-y-2">
+              <Button variant="ghost" className="w-full justify-center">
+                Log in
+              </Button>
+              <Button className="w-full justify-center">Sign up</Button>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* Mobile Navigation Links */}
-      <div
-        className={`${
-          isMobileMenuOpen ? "block" : "hidden"
-        } lg:hidden bg-white text-gray-800 space-y-4 py-4 px-6 text-center mx-auto`}
-      >
-        <Link href="/features" className="block hover:text-blue-600">
-          Features
-        </Link>
-        <Link href="/pricing" className="block hover:text-blue-600">
-          Pricing
-        </Link>
-
-        {/* Authentication Links for Mobile */}
-        <div className="flex flex-col space-y-4">
-          <Link
-            href="/login"
-            className="px-4 py-2 text-sm font-medium text-primary bg-primary/10 rounded-lg shadow-sm hover:bg-primary/20 focus:outline-none focus:ring focus:ring-primary/30"
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg shadow-sm hover:bg-primary-dark focus:outline-none focus:ring focus:ring-primary/50"
-          >
-            Sign Up
-          </Link>
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </header>
   );
-};
-
-export default Nav;
+}
