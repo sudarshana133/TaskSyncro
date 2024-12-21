@@ -31,15 +31,12 @@ TaskSyncro is a personalized micro-learning platform designed to help users enga
 │
 ├── /components            # Reusable UI components
 ├── /lib                   # Utilities like `appwrite.ts` and `auth.ts`
-├── /pages                 # Next.js page components
+├── /app                   # Next.js app router
 │   ├── /api               # API routes
-│   ├── /auth              # Authentication pages (login, register)
 │   ├── /dashboard         # Dashboard page
-│   ├── /modules           # Modules page
 ├── /public                # Static assets
 ├── /styles                # Tailwind CSS configurations
 ├── /utils                 # Helper functions
-├── docker-compose.yml     # Docker configuration for development and production
 ├── next.config.js         # Next.js configuration
 └── package.json           # Project dependencies and scripts
 ```
